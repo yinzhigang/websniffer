@@ -24,7 +24,6 @@ class MainFrame(wx.Frame):
     def _PostInit(self):
         """初始化窗口控件"""
         self.Bind(wx.EVT_MENU, self.OnExit, id=xrc.XRCID('menuExit'))
-        self.mainToolbar = xrc.XRCCTRL(self, 'mainToolbar')
         self.Bind(wx.EVT_TOOL, self.OnProxyStart, id=xrc.XRCID('toolBarStart'))
         
         self.infoPanel = xrc.XRCCTRL(self, 'infoPanel')
@@ -104,7 +103,6 @@ class MainFrame(wx.Frame):
         self.infoPanel.Thaw()
 
     def OnProxyStart(self, event):
-        self.mainToolbar.EnableTool(event.GetId(), False)
         import SocketServ
         if event.IsChecked():
             self.thread = SocketServ.StartServer('SocketServ', self)
@@ -113,7 +111,6 @@ class MainFrame(wx.Frame):
         else:
             self.thread.stop()
             print 'Server Stop'
-        self.mainToolbar.EnableTool(event.GetId(), True)
 
     def DoNewRequest(self, path):
         self.request_tree.AppendItem(self.tree_root, path)
