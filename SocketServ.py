@@ -4,11 +4,11 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
-#import BaseHTTPServer
 
 class ProxyRequestHandler(SocketServer.StreamRequestHandler):
     
     def handle(self):
+        self.server.window.LogWindow('Request one handle')
         raw_requestline = self.rfile.readline()
         if raw_requestline:
             [command, path, version] = raw_requestline.split()
@@ -36,9 +36,9 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
     
     def _read_write(self, soc):
         rfile = soc.makefile('rw', -1)
-        for i in rfile:
-            print i
-            print ''.join(map(lambda c: "%02X" % ord(c), i))
+#        for i in rfile:
+#            print i
+#            print ''.join(map(lambda c: "%02X" % ord(c), i))
         raw_responseline = rfile.readline()
         self.wfile.write(raw_responseline)
         headers = rfc822.Message(rfile, 0)
@@ -61,7 +61,6 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
         self.wfile.write('\r\n')
         self.wfile.write(content)
         if encoding == 'gzip' and content_type[:4] == 'text':
-#            print 'gzip decompress'
             print gzip.GzipFile(fileobj=StringIO(content)).read()
         elif content_type[:4] == 'text':
             print content
@@ -70,8 +69,9 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
 
 class MBThreadingTCPServer(SocketServer.ThreadingTCPServer):
 
-    def __init__(self, address_tuple, handler):
+    def __init__(self, address_tuple, handler, window):
         SocketServer.ThreadingTCPServer.__init__(self, address_tuple, handler)
+        self.window = window
         self.__serving = True
 
     def serve_forever(self):
@@ -83,6 +83,8 @@ class MBThreadingTCPServer(SocketServer.ThreadingTCPServer):
 
 class StartServer(threading.Thread):
     
+    address_tuple = ('', 8000)
+    
     def __init__(self, threadname, window):
         threading.Thread.__init__(self)
         self.window = window
@@ -90,16 +92,15 @@ class StartServer(threading.Thread):
     def run(self):
         from wx import CallAfter
         CallAfter(self.window.LogWindow, 'SocketServ Started')
-        self.server = MBThreadingTCPServer(('', 8000), ProxyRequestHandler)
+        self.server = MBThreadingTCPServer(self.address_tuple, ProxyRequestHandler, self.window)
         self.server.serve_forever()
     
     def stop(self):
-#        self.server.server_close()
         from wx import CallAfter
         self.server.shutdown()
         close_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            close_sock.connect(('localhost', 8000))
+            close_sock.connect(self.address_tuple)
         except Exception:
             pass
         finally:

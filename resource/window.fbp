@@ -126,7 +126,7 @@
                         <property name="id">wxID_ANY</property>
                         <property name="kind">wxITEM_NORMAL</property>
                         <property name="label">New</property>
-                        <property name="name">m_menuItem7</property>
+                        <property name="name">menuNew</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
@@ -138,10 +138,10 @@
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
                         <property name="help"></property>
-                        <property name="id">wxID_ANY</property>
+                        <property name="id">wxID_OPEN</property>
                         <property name="kind">wxITEM_NORMAL</property>
                         <property name="label">Open...</property>
-                        <property name="name">m_menuItem8</property>
+                        <property name="name">menuOpen</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
@@ -153,10 +153,10 @@
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
                         <property name="help"></property>
-                        <property name="id">wxID_ANY</property>
+                        <property name="id">wxID_PREFERENCES</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">MyMenuItem</property>
-                        <property name="name">m_menuItem9</property>
+                        <property name="label">Preferences...</property>
+                        <property name="name">menuSetting</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
@@ -171,12 +171,12 @@
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
                         <property name="help"></property>
-                        <property name="id">wxID_ANY</property>
+                        <property name="id">wxID_EXIT</property>
                         <property name="kind">wxITEM_NORMAL</property>
                         <property name="label">Exit</property>
-                        <property name="name">m_menuItem101</property>
+                        <property name="name">menuExit</property>
                         <property name="permission">none</property>
-                        <property name="shortcut">CTRL+Q</property>
+                        <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection"></event>
                         <event name="OnUpdateUI"></event>
@@ -283,7 +283,7 @@
                     </object>
                 </object>
             </object>
-            <object class="wxToolBar" expanded="0">
+            <object class="wxToolBar" expanded="1">
                 <property name="bg"></property>
                 <property name="bitmapsize">32,32</property>
                 <property name="context_help"></property>
@@ -362,7 +362,7 @@
                 <object class="tool" expanded="1">
                     <property name="bitmap">images/toolbar/Record.png; Load From File</property>
                     <property name="id">wxID_ANY</property>
-                    <property name="kind">wxITEM_NORMAL</property>
+                    <property name="kind">wxITEM_CHECK</property>
                     <property name="label">Start Proxy</property>
                     <property name="name">toolBarStart</property>
                     <property name="statusbar"></property>

@@ -7,19 +7,26 @@ import wx.gizmos
 import resource
 
 class MainFrame(wx.Frame):
+    """主窗口"""
     
     def __init__(self):
+        """初始化主窗口"""
         pre = wx.PreFrame()
         self.PostCreate(pre)
         self.Bind(wx.EVT_WINDOW_CREATE, self.OnCreate)
     
     def OnCreate(self, event):
+        """加载资源并呼叫初始化"""
         self.Unbind(wx.EVT_WINDOW_CREATE)
         self.res = resource.GetResource()
-        # self.SetTitle('This is the xrc window')
         wx.CallAfter(self._PostInit)
     
     def _PostInit(self):
+        """初始化窗口控件"""
+        self.Bind(wx.EVT_MENU, self.OnExit, id=xrc.XRCID('menuExit'))
+        self.mainToolbar = xrc.XRCCTRL(self, 'mainToolbar')
+        self.Bind(wx.EVT_TOOL, self.OnProxyStart, id=xrc.XRCID('toolBarStart'))
+        
         self.infoPanel = xrc.XRCCTRL(self, 'infoPanel')
         self.info_notebook = xrc.XRCCTRL(self, 'info_notebook')
         
@@ -33,14 +40,16 @@ class MainFrame(wx.Frame):
         self.request_tree.AppendItem(blogbus, 'user/')
         gang = self.request_tree.AppendItem(self.tree_root, 'gang.blogbus.com')
         self.request_tree.AppendItem(gang, '<default>')
+        zhigang = self.request_tree.AppendItem(self.tree_root, 'www.zhigang.net')
     
     def OnTreeRequestTreeSelChanged(self, event):
+        """ RequesTree选择更换事件 """
         item = event.GetItem()
         text = self.request_tree.GetItemText(item)
         self.ShowInfo(text)
-        #print 'changed %s' % text
     
     def ShowInfo(self, text):
+        """ 显示相关请求信息 """
         self.infoPanel.Freeze()
         self.info_notebook.DeleteAllPages()
         #========== General Tab ===========
@@ -91,3 +100,21 @@ class MainFrame(wx.Frame):
         
         self.infoPanel.Thaw()
 
+    def OnProxyStart(self, event):
+        self.mainToolbar.EnableTool(event.GetId(), False)
+        import SocketServ
+        if event.IsChecked():
+            self.thread = SocketServ.StartServer('SocketServ', self)
+            self.thread.setDaemon(1)
+            self.thread.start()
+        else:
+            self.thread.stop()
+            print 'Server Stop'
+        self.mainToolbar.EnableTool(event.GetId(), True)
+
+    def LogWindow(self, message):
+        print message
+
+    def OnExit(self, event):
+        """退出窗口"""
+        self.Close(True)
