@@ -1,19 +1,25 @@
 # encoding: utf-8
 import socket, urlparse, SocketServer, rfc822, gzip, threading
+import select
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
 
+from wx import CallAfter
+
 class ProxyRequestHandler(SocketServer.StreamRequestHandler):
     
     def handle(self):
-        self.server.window.LogWindow('Request one handle')
+        """
+        处理请求
+        """
         raw_requestline = self.rfile.readline()
         if raw_requestline:
             [command, path, version] = raw_requestline.split()
             headers = rfc822.Message(self.rfile, 0)
-            (scm, host, path, params, query, fragment) = urlparse.urlparse(path, 'http')
+            (scm, host, path, params, query, fragment) = urlparse.urlparse(path)
+            CallAfter(self.server.window.DoNewRequest, path)
             headers['Connection'] = 'close'
             del headers['Proxy-Connection']
             print command, urlparse.urlunparse(('', '', path, params, query, ''))
@@ -23,7 +29,7 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 soc.connect((host, 80))
                 soc.send("%s %s %s\r\n" % (command,
                                        urlparse.urlunparse(('', '', path, params, query, '')),
-                                       'HTTP/1.1'))
+                                       version))
                 for key_val in headers.items():
                     soc.send("%s: %s\r\n" % key_val)
                 soc.send("\r\n")
@@ -34,38 +40,62 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 soc.close()
                 self.connection.close()
     
-    def _read_write(self, soc):
-        rfile = soc.makefile('rw', -1)
-#        for i in rfile:
-#            print i
-#            print ''.join(map(lambda c: "%02X" % ord(c), i))
-        raw_responseline = rfile.readline()
-        self.wfile.write(raw_responseline)
-        headers = rfc822.Message(rfile, 0)
-        encoding = headers.get('Content-Encoding', '')
-        content_type = headers.get('Content-Type', '')
-        content = []
-        if headers.get('Transfer-Encoding') == 'chunked':
-            chunk_size = int(rfile.readline()[:-2], 16)
-            while chunk_size > 0:
-                content.append(rfile.read(chunk_size))
-                rfile.read(2)
-                chunk_size = int(rfile.readline()[:-2], 16)
-        else:
-            for i in rfile:
-                content.append(i)
-        content = "".join(content)
-        del headers['Transfer-Encoding']
-        headers['Content-Length'] = str(len(content))
-        self.wfile.write(headers)
-        self.wfile.write('\r\n')
-        self.wfile.write(content)
-        if encoding == 'gzip' and content_type[:4] == 'text':
-            print gzip.GzipFile(fileobj=StringIO(content)).read()
-        elif content_type[:4] == 'text':
-            print content
-        else:
-            print 'no text', content_type
+    def _read_write(self, soc, max_idling=20):
+        """
+        发回服务器返回数据
+        """
+        iw = [self.connection, soc]
+        ow = []
+        count = 0
+        while 1:
+            count += 1
+            (ins, _, exs) = select.select(iw, ow, iw, 3)
+            if exs: break
+            if ins:
+                for i in ins:
+                    if i is soc:
+                        out = self.connection
+                    else:
+                        out = soc
+                    data = i.recv(8192)
+                    if data:
+                        out.send(data)
+                        count = 0
+            else:
+                print "\t" "idle", count
+            if count == max_idling: break
+#        
+#        rfile = soc.makefile('rw', -1)
+##        for i in rfile:
+##            print i
+##            print ''.join(map(lambda c: "%02X" % ord(c), i))
+#        raw_responseline = rfile.readline()
+#        self.wfile.write(raw_responseline)
+#        headers = rfc822.Message(rfile, 0)
+#        encoding = headers.get('Content-Encoding', '')
+#        content_type = headers.get('Content-Type', '')
+#        content = []
+#        if headers.get('Transfer-Encoding') == 'chunked':
+#            chunk_size = int(rfile.readline()[:-2], 16)
+#            while chunk_size > 0:
+#                content.append(rfile.read(chunk_size))
+#                rfile.read(2)
+#                chunk_size = int(rfile.readline()[:-2], 16)
+#        else:
+#            for i in rfile:
+#                content.append(i)
+#        content = "".join(content)
+#        del headers['Transfer-Encoding']
+#        headers['Content-Length'] = str(len(content))
+#        self.wfile.write(headers)
+#        self.wfile.write('\r\n')
+#        self.wfile.write(content)
+#        if encoding == 'gzip' and content_type[:4] == 'text':
+#            print gzip.GzipFile(fileobj=StringIO(content)).read()
+#        elif content_type[:4] == 'text':
+#            print content
+#        else:
+#            print 'no text', content_type
 
 class MBThreadingTCPServer(SocketServer.ThreadingTCPServer):
 
@@ -90,13 +120,11 @@ class StartServer(threading.Thread):
         self.window = window
     
     def run(self):
-        from wx import CallAfter
         CallAfter(self.window.LogWindow, 'SocketServ Started')
         self.server = MBThreadingTCPServer(self.address_tuple, ProxyRequestHandler, self.window)
         self.server.serve_forever()
     
     def stop(self):
-        from wx import CallAfter
         self.server.shutdown()
         close_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:

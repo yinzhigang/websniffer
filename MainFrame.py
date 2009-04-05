@@ -33,18 +33,21 @@ class MainFrame(wx.Frame):
         self.request_tree = xrc.XRCCTRL(self, 'request_tree')
         self.request_tree.Bind(wx.EVT_TREE_SEL_CHANGED,
               self.OnTreeRequestTreeSelChanged, id=xrc.XRCID('request_tree'))
-        
         self.tree_root = self.request_tree.AddRoot('root')
+        
         blogbus = self.request_tree.AppendItem(self.tree_root, 'www.blogbus.com')
         self.request_tree.AppendItem(blogbus, '<default>')
-        self.request_tree.AppendItem(blogbus, 'user/')
+        ttitem = self.request_tree.AppendItem(blogbus, 'user/')
+        self.request_tree.SetItemPyData(ttitem, 'abcdefgbbcc')
         gang = self.request_tree.AppendItem(self.tree_root, 'gang.blogbus.com')
         self.request_tree.AppendItem(gang, '<default>')
         zhigang = self.request_tree.AppendItem(self.tree_root, 'www.zhigang.net')
+        self.request_tree.SetItemPyData(zhigang, 't8b6d/32')
     
     def OnTreeRequestTreeSelChanged(self, event):
         """ RequesTree选择更换事件 """
         item = event.GetItem()
+        print self.request_tree.GetItemPyData(item)
         text = self.request_tree.GetItemText(item)
         self.ShowInfo(text)
     
@@ -112,6 +115,10 @@ class MainFrame(wx.Frame):
             print 'Server Stop'
         self.mainToolbar.EnableTool(event.GetId(), True)
 
+    def DoNewRequest(self, path):
+        self.request_tree.AppendItem(self.tree_root, path)
+        pass
+    
     def LogWindow(self, message):
         print message
 
