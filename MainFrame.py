@@ -46,7 +46,13 @@ class MainFrame(wx.Frame):
     def OnTreeRequestTreeSelChanged(self, event):
         """ RequesTree选择更换事件 """
         item = event.GetItem()
-        print self.request_tree.GetItemPyData(item)
+        result = []
+        titem, cookie = self.request_tree.GetFirstChild(self.tree_root) 
+        while titem: 
+            result.append(self.request_tree.GetItemText(titem)) 
+            titem, cookie = self.request_tree.GetNextChild(self.tree_root, cookie)
+        print result 
+#        print self.request_tree.GetItemPyData(item)
         text = self.request_tree.GetItemText(item)
         self.ShowInfo(text)
     
@@ -113,6 +119,7 @@ class MainFrame(wx.Frame):
             print 'Server Stop'
 
     def DoNewRequest(self, path):
+        host, path, params, query = path
         self.request_tree.AppendItem(self.tree_root, path)
         pass
     

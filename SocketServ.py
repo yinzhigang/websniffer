@@ -19,14 +19,20 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
             [command, path, version] = raw_requestline.split()
             headers = rfc822.Message(self.rfile, 0)
             (scm, host, path, params, query, fragment) = urlparse.urlparse(path)
-            CallAfter(self.server.window.DoNewRequest, path)
+            #通知主窗口更新
+            CallAfter(self.server.window.DoNewRequest, (host, path, params, query))
             headers['Connection'] = 'close'
             del headers['Proxy-Connection']
             print command, urlparse.urlunparse(('', '', path, params, query, ''))
             
             soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
-                soc.connect((host, 80))
+                i = host.find(':')
+                if i >= 0:
+                    host_port = host[:i], int(host[i+1:])
+                else:
+                    host_port = host, 80
+                soc.connect(host_port)
                 soc.send("%s %s %s\r\n" % (command,
                                        urlparse.urlunparse(('', '', path, params, query, '')),
                                        version))
@@ -113,7 +119,7 @@ class MBThreadingTCPServer(SocketServer.ThreadingTCPServer):
 
 class StartServer(threading.Thread):
     
-    address_tuple = ('', 8000)
+    address_tuple = ('', 8789)
     
     def __init__(self, threadname, window):
         threading.Thread.__init__(self)
@@ -138,5 +144,5 @@ class StartServer(threading.Thread):
         CallAfter(self.window.LogWindow, 'SocketServ Stoped')
 
 if __name__ == '__main__':
-    server = MBThreadingTCPServer(('', 8000), ProxyRequestHandler)
+    server = MBThreadingTCPServer(('', 8789), ProxyRequestHandler)
     server.serve_forever()
