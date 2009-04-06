@@ -23,7 +23,7 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
             CallAfter(self.server.window.DoNewRequest, (host, path, params, query))
             headers['Connection'] = 'close'
             del headers['Proxy-Connection']
-            print command, urlparse.urlunparse(('', '', path, params, query, ''))
+#            print command, urlparse.urlunparse(('', '', path, params, query, ''))
             
             soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
@@ -33,14 +33,13 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 else:
                     host_port = host, 80
                 soc.connect(host_port)
-                soc.send("%s %s %s\r\n" % (command,
-                                       urlparse.urlunparse(('', '', path, params, query, '')),
-                                       version))
+                url = urlparse.urlunparse(('', '', path, params, query, ''))
+                soc.send("%s %s %s\r\n" % (command, url, version))
                 for key_val in headers.items():
                     soc.send("%s: %s\r\n" % key_val)
                 soc.send("\r\n")
                 self._read_write(soc)
-            except Exception, e :
+            except Exception, e:
                 print 'error', e
             finally:
                 soc.close()

@@ -34,27 +34,22 @@ class MainFrame(wx.Frame):
               self.OnTreeRequestTreeSelChanged, id=xrc.XRCID('request_tree'))
         self.tree_root = self.request_tree.AddRoot('root')
         
-        blogbus = self.request_tree.AppendItem(self.tree_root, 'www.blogbus.com')
-        self.request_tree.AppendItem(blogbus, '<default>')
-        ttitem = self.request_tree.AppendItem(blogbus, 'user/')
-        self.request_tree.SetItemPyData(ttitem, 'abcdefgbbcc')
-        gang = self.request_tree.AppendItem(self.tree_root, 'gang.blogbus.com')
-        self.request_tree.AppendItem(gang, '<default>')
-        zhigang = self.request_tree.AppendItem(self.tree_root, 'www.zhigang.net')
-        self.request_tree.SetItemPyData(zhigang, 't8b6d/32')
+#        blogbus = self.request_tree.AppendItem(self.tree_root, 'www.blogbus.com')
+#        self.request_tree.AppendItem(blogbus, '<default>')
+#        ttitem = self.request_tree.AppendItem(blogbus, 'user/')
+#        self.request_tree.SetItemPyData(ttitem, 'abcdefgbbcc')
+#        gang = self.request_tree.AppendItem(self.tree_root, 'gang.blogbus.com')
+#        self.request_tree.AppendItem(gang, '<default>')
+#        zhigang = self.request_tree.AppendItem(self.tree_root, 'www.zhigang.net')
+#        self.request_tree.SetItemPyData(zhigang, 't8b6d/32')
     
     def OnTreeRequestTreeSelChanged(self, event):
         """ RequesTree选择更换事件 """
         item = event.GetItem()
-        result = []
-        titem, cookie = self.request_tree.GetFirstChild(self.tree_root) 
-        while titem: 
-            result.append(self.request_tree.GetItemText(titem)) 
-            titem, cookie = self.request_tree.GetNextChild(self.tree_root, cookie)
-        print result 
-#        print self.request_tree.GetItemPyData(item)
-        text = self.request_tree.GetItemText(item)
-        self.ShowInfo(text)
+        if self.request_tree.ItemHasChildren(item) is False:
+            print self.request_tree.GetItemPyData(item)
+            text = self.request_tree.GetItemText(item)
+            self.ShowInfo(text)
     
     def ShowInfo(self, text):
         """ 显示相关请求信息 """
@@ -118,10 +113,21 @@ class MainFrame(wx.Frame):
             self.thread.stop()
             print 'Server Stop'
 
-    def DoNewRequest(self, path):
+    def DoNewRequest(self, path, data = ''):
+        """添加请求到树中"""
+        import urlparse
         host, path, params, query = path
-        self.request_tree.AppendItem(self.tree_root, path)
-        pass
+        item, cookie = self.request_tree.GetFirstChild(self.tree_root)
+        host_item = None
+        while item:
+            text = self.request_tree.GetItemText(item)
+            if text == host:
+                host_item = item
+                break
+            item, cookie = self.request_tree.GetNextChild(self.tree_root, cookie)
+        if host_item is None:
+            host_item = self.request_tree.AppendItem(self.tree_root, host)
+        self.request_tree.AppendItem(host_item, urlparse.urlunparse(('', '', path, params, query, '')))
     
     def LogWindow(self, message):
         print message
