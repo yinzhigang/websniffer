@@ -4,6 +4,15 @@ import wx
 from wx import xrc
 import wx.gizmos
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 import resource
 
 class MainFrame(wx.Frame):
@@ -33,21 +42,14 @@ class MainFrame(wx.Frame):
         self.request_tree.Bind(wx.EVT_TREE_SEL_CHANGED,
               self.OnTreeRequestTreeSelChanged, id=xrc.XRCID('request_tree'))
         self.tree_root = self.request_tree.AddRoot('root')
-        
-#        blogbus = self.request_tree.AppendItem(self.tree_root, 'www.blogbus.com')
-#        self.request_tree.AppendItem(blogbus, '<default>')
-#        ttitem = self.request_tree.AppendItem(blogbus, 'user/')
-#        self.request_tree.SetItemPyData(ttitem, 'abcdefgbbcc')
-#        gang = self.request_tree.AppendItem(self.tree_root, 'gang.blogbus.com')
-#        self.request_tree.AppendItem(gang, '<default>')
-#        zhigang = self.request_tree.AppendItem(self.tree_root, 'www.zhigang.net')
-#        self.request_tree.SetItemPyData(zhigang, 't8b6d/32')
     
     def OnTreeRequestTreeSelChanged(self, event):
         """ RequesTree选择更换事件 """
         item = event.GetItem()
         if self.request_tree.ItemHasChildren(item) is False:
-            print self.request_tree.GetItemPyData(item)
+            data = self.request_tree.GetItemPyData(item)
+            data.seek(0)
+            print pickle.load(data)
             text = self.request_tree.GetItemText(item)
             self.ShowInfo(text)
     
@@ -127,7 +129,9 @@ class MainFrame(wx.Frame):
             item, cookie = self.request_tree.GetNextChild(self.tree_root, cookie)
         if host_item is None:
             host_item = self.request_tree.AppendItem(self.tree_root, host)
-        self.request_tree.AppendItem(host_item, urlparse.urlunparse(('', '', path, params, query, '')))
+        url = urlparse.urlunparse(('', '', path, params, query, ''))
+        request = self.request_tree.AppendItem(host_item, url)
+        self.request_tree.SetItemPyData(request, data)
     
     def LogWindow(self, message):
         print message

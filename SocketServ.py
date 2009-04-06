@@ -1,12 +1,20 @@
 # encoding: utf-8
-import socket, urlparse, SocketServer, rfc822, gzip, threading
+import socket, urlparse, SocketServer, rfc822, gzip, threading, BaseHTTPServer
 import select
+import tempfile
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 from wx import CallAfter
+import ParseInfo
+
+_blanklines = ('\r\n', '\n')
 
 class ProxyRequestHandler(SocketServer.StreamRequestHandler):
     
@@ -16,13 +24,18 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
         """
         raw_requestline = self.rfile.readline()
         if raw_requestline:
+            if raw_requestline[-2:] == '\r\n':
+                reline = '\r\n'
+            elif raw_requestline[-1:] == '\n':
+                reline = '\n'
             [command, path, version] = raw_requestline.split()
-            headers = rfc822.Message(self.rfile, 0)
+#            headers = rfc822.Message(self.rfile, 0)
             (scm, host, path, params, query, fragment) = urlparse.urlparse(path)
-            #通知主窗口更新
-            CallAfter(self.server.window.DoNewRequest, (host, path, params, query))
-            headers['Connection'] = 'close'
-            del headers['Proxy-Connection']
+            
+            parse_info = ParseInfo.ParseInfo()
+#            
+#            headers['Connection'] = 'close'
+#            del headers['Proxy-Connection']
 #            print command, urlparse.urlunparse(('', '', path, params, query, ''))
             
             soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,22 +46,46 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 else:
                     host_port = host, 80
                 soc.connect(host_port)
+                
                 url = urlparse.urlunparse(('', '', path, params, query, ''))
-                soc.send("%s %s %s\r\n" % (command, url, version))
-                for key_val in headers.items():
-                    soc.send("%s: %s\r\n" % key_val)
-                soc.send("\r\n")
-                self._read_write(soc)
+                request_url_command = "%s %s %s%s" % (command, url, version, reline)
+                
+                soc.send(request_url_command)
+                parse_info.write('request', request_url_command)
+                
+                while 1:
+                    line = self.rfile.readline()
+                    if not line:
+                        break
+                    if line[:16].lower() == 'proxy-connection':
+                        line = "Connection: close%s" % (reline)
+                    soc.send(line)
+                    parse_info.write('request', line)
+                    if line in _blanklines:
+                        break
+                
+#                for key_val in headers.items():
+#                    header = "%s: %s\r\n" % key_val
+#                    soc.send(header)
+#                    parse_info.write('request', header)
+                
+#                soc.send("\r\n")
+#                parse_info.write('request', "\r\n")
+                self._read_write(soc, parse_info)
+                
+                parse_info.parse()
+                tf = tempfile.TemporaryFile()
+                dump = pickle.dump(parse_info, file=tf, protocol=2)
+                #通知主窗口更新
+                CallAfter(self.server.window.DoNewRequest, (host, path, params, query), tf)
             except Exception, e:
                 print 'error', e
             finally:
                 soc.close()
                 self.connection.close()
     
-    def _read_write(self, soc, max_idling=20):
-        """
-        发回服务器返回数据
-        """
+    def _read_write(self, soc, parse_info, max_idling=20):
+        """ 发回服务器返回数据 """
         iw = [self.connection, soc]
         ow = []
         count = 0
@@ -60,11 +97,14 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 for i in ins:
                     if i is soc:
                         out = self.connection
+                        method = 'response'
                     else:
                         out = soc
+                        method = 'request'
                     data = i.recv(8192)
                     if data:
                         out.send(data)
+                        parse_info.write(method, data)
                         count = 0
             else:
                 print "\t" "idle", count
@@ -103,6 +143,8 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
 #            print 'no text', content_type
 
 class MBThreadingTCPServer(SocketServer.ThreadingTCPServer):
+    
+    daemon_threads = True
 
     def __init__(self, address_tuple, handler, window):
         SocketServer.ThreadingTCPServer.__init__(self, address_tuple, handler)
