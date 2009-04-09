@@ -123,7 +123,10 @@ class MainFrame(wx.Frame):
         responseRawTextCtrl = xrc.XRCCTRL(responseRaw, 'textCtrl')
         response_raw_text = parse_info.raw('response')#.decode('utf-8', 'ignore')
         response_raw_text = repr(response_raw_text)
-        responseRawTextCtrl.SetValue(response_raw_text)
+        try:
+            responseRawTextCtrl.SetValue(response_raw_text)
+        except:
+            pass
         responseBook.AddPage(page=responseRaw, select=False, text="Raw")
         #========== End Response Tab ===========
         self.infoPanel.Thaw()

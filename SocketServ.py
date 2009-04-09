@@ -76,7 +76,7 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 
                 parse_info.parse()
                 tf = tempfile.TemporaryFile()
-                dump = pickle.dump(parse_info, file=tf, protocol=2)
+                dump = pickle.dump(parse_info, file=tf, protocol=1)
                 #通知主窗口更新
                 CallAfter(self.server.window.DoNewRequest, (host, path, params, query), tf)
             except Exception, e:
