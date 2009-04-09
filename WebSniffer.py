@@ -8,7 +8,7 @@ Created on Mar 21, 2009
 import wx
 import resource
 
-class ProxyApp(wx.App):
+class WebSnifferApp(wx.App):
     
     def OnInit(self):
         self.res = resource.GetResource()
@@ -22,5 +22,5 @@ class ProxyApp(wx.App):
         self.frame.Show()
 
 if __name__ == '__main__':
-    app = ProxyApp(False)
+    app = WebSnifferApp(False)
     app.MainLoop()

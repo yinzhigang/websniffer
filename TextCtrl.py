@@ -18,4 +18,7 @@ class TextCtrl(wx.TextCtrl):
     def SetValue(self, value):
         if wx.Platform == "__WXMAC__":
             value = value.replace('\r\n', '\n')
-        super(TextCtrl, self).SetValue(value)
+        try:
+            super(TextCtrl, self).SetValue(value)
+        except Exception, e:
+            pass
