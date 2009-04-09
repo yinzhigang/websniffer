@@ -85,21 +85,21 @@ class MainFrame(wx.Frame):
         requestHeader = self.res.LoadPanel(requestBook, 'textPanel')
         requestHeaderTextCtrl = xrc.XRCCTRL(requestHeader, 'textCtrl')
         request_header_text = parse_info.getHeader('request')
-        requestHeaderTextCtrl.SetValue(request_header_text)
         requestBook.AddPage(page=requestHeader, select=True, text="Headers")
+        requestHeaderTextCtrl.SetValue(request_header_text)
         
         requestBody = self.res.LoadPanel(requestBook, 'textPanel')
         requestBodyTextCtrl = xrc.XRCCTRL(requestBody, 'textCtrl')
         request_body_text = parse_info.getBody('request')
-        requestBodyTextCtrl.SetValue(request_body_text)
         requestBook.AddPage(page=requestBody, select=False, text="Cookies")
+        requestBodyTextCtrl.SetValue(request_body_text)
         
         requestRaw = self.res.LoadPanel(requestBook, 'textPanel')
         requestRawTextCtrl = xrc.XRCCTRL(requestRaw, 'textCtrl')
         request_raw_text = parse_info.raw('request')
         request_raw_text = repr(request_raw_text)
-        requestRawTextCtrl.SetValue(request_raw_text)
         requestBook.AddPage(page=requestRaw, select=False, text="Raw")
+        requestRawTextCtrl.SetValue(request_raw_text)
         #========== End Request Tab ===========
         #========== Response Tab ===========
         responsePanel = self.res.LoadPanel(self.info_notebook, 'notebookPanel')
@@ -110,21 +110,21 @@ class MainFrame(wx.Frame):
         responseHeader = self.res.LoadPanel(responseBook, 'textPanel')
         responseHeaderTextCtrl = xrc.XRCCTRL(responseHeader, 'textCtrl')
         response_header_text = parse_info.getHeader('response')
-        responseHeaderTextCtrl.SetValue(response_header_text)
         responseBook.AddPage(page=responseHeader, select=True, text="Heasers")
+        responseHeaderTextCtrl.SetValue(response_header_text)
         
         responseText = self.res.LoadPanel(responseBook, 'textPanel')
         responseBodyTextCtrl = xrc.XRCCTRL(responseText, 'textCtrl')
         response_body_text = parse_info.getBody('response')
-        responseBodyTextCtrl.SetValue(response_body_text)
         responseBook.AddPage(page=responseText, select=False, text="Text")
+        responseBodyTextCtrl.SetValue(response_body_text)
         
         responseRaw = self.res.LoadPanel(responseBook, 'textPanel')
         responseRawTextCtrl = xrc.XRCCTRL(responseRaw, 'textCtrl')
         response_raw_text = parse_info.raw('response')#.decode('utf-8', 'ignore')
         response_raw_text = repr(response_raw_text)
-        responseRawTextCtrl.SetValue(response_raw_text)
         responseBook.AddPage(page=responseRaw, select=False, text="Raw")
+        responseRawTextCtrl.SetValue(response_raw_text)
         #========== End Response Tab ===========
         self.infoPanel.Thaw()
 

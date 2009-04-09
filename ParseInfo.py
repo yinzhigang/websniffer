@@ -75,6 +75,10 @@ class ParseInfo(object):
         response_body_encode = chardet.detect(self.response_body).get('encoding')
         if response_body_encode:
             self.response_body = self.response_body.decode(response_body_encode, 'replace')
+        self.raw_request = self.request.getvalue()
+        self.raw_response = self.response.getvalue()
+        del self.request
+        del self.response
 
     def getHeader(self, method):
         if method == 'request':
@@ -86,7 +90,6 @@ class ParseInfo(object):
         for key, value in header.items():
             headers.append('%s: %s' % (key, value))
         return ''.join(headers)
-        
     
     def getBody(self, method):
         if method == 'request':
@@ -96,6 +99,6 @@ class ParseInfo(object):
 
     def raw(self, method):
         if method == 'request':
-            return self.request.getvalue()
+            return self.raw_request
         elif method == 'response':
-            return self.response.getvalue()
+            return self.raw_response
