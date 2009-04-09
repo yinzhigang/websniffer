@@ -1,5 +1,5 @@
 from distutils.core import setup
-import py2exe
+import py2exe, sys, glob
 
 manifest = """
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -44,6 +44,8 @@ setup(
       author="yinzhigang",
       author_email="sxin.net@gmail.com",
       data_files = [
-        ('websniffer.ico', 'websniffer.ico'),
+        'websniffer.ico',
+        ('images/toolbar', glob.glob("images/toolbar/*.png")),
+        ('window', glob.glob('window/window.xrc')),
       ]
       )
