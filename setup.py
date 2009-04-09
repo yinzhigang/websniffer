@@ -29,7 +29,7 @@ language="*"
 
 setup(
       windows=[{
-                "script": 'ProxyApp.py',
+                "script": 'WebSniffer.py',
                 "other_resources": [(24,1,manifest)],
                 'icon_resources': [(1, 'websniffer.ico')]
                 }],
