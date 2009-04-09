@@ -49,11 +49,10 @@ class MainFrame(wx.Frame):
         if self.request_tree.ItemHasChildren(item) is False:
             data = self.request_tree.GetItemPyData(item)
             data.seek(0)
-            print pickle.load(data)
-            text = self.request_tree.GetItemText(item)
-            self.ShowInfo(text)
+            parse_info = pickle.load(data)
+            self.ShowInfo(parse_info)
     
-    def ShowInfo(self, text):
+    def ShowInfo(self, parse_info):
         """ 显示相关请求信息 """
         self.infoPanel.Freeze()
         self.info_notebook.DeleteAllPages()
@@ -72,7 +71,6 @@ class MainFrame(wx.Frame):
         hostItem = treeListCtrl1.AppendItem(root, 'Host:')
         treeListCtrl1.SetItemText(hostItem, 'www.blogbus.com', 1)
         clientItem = treeListCtrl1.AppendItem(root, 'Client:')
-        treeListCtrl1.SetItemText(clientItem, text, 1)
         treeListCtrl1.Expand(root)
         
         generalPanpel.SetSizer(generalBoxSizer)
@@ -85,10 +83,23 @@ class MainFrame(wx.Frame):
         requestBook = xrc.XRCCTRL(requestPanel, 'noteBook')
         
         requestHeader = self.res.LoadPanel(requestBook, 'textPanel')
+        requestHeaderTextCtrl = xrc.XRCCTRL(requestHeader, 'textCtrl')
+        request_header_text = parse_info.getHeader('request')
+        requestHeaderTextCtrl.SetValue(request_header_text)
         requestBook.AddPage(page=requestHeader, select=True, text="Headers")
         
         requestBody = self.res.LoadPanel(requestBook, 'textPanel')
+        requestBodyTextCtrl = xrc.XRCCTRL(requestBody, 'textCtrl')
+        request_body_text = parse_info.getBody('request')
+        requestBodyTextCtrl.SetValue(request_body_text)
         requestBook.AddPage(page=requestBody, select=False, text="Cookies")
+        
+        requestRaw = self.res.LoadPanel(requestBook, 'textPanel')
+        requestRawTextCtrl = xrc.XRCCTRL(requestRaw, 'textCtrl')
+        request_raw_text = parse_info.raw('request')
+        request_raw_text = repr(request_raw_text)
+        requestRawTextCtrl.SetValue(request_raw_text)
+        requestBook.AddPage(page=requestRaw, select=False, text="Raw")
         #========== End Request Tab ===========
         #========== Response Tab ===========
         responsePanel = self.res.LoadPanel(self.info_notebook, 'notebookPanel')
@@ -97,12 +108,24 @@ class MainFrame(wx.Frame):
         responseBook = xrc.XRCCTRL(responsePanel, 'noteBook')
         
         responseHeader = self.res.LoadPanel(responseBook, 'textPanel')
+        responseHeaderTextCtrl = xrc.XRCCTRL(responseHeader, 'textCtrl')
+        response_header_text = parse_info.getHeader('response')
+        responseHeaderTextCtrl.SetValue(response_header_text)
         responseBook.AddPage(page=responseHeader, select=True, text="Heasers")
         
         responseText = self.res.LoadPanel(responseBook, 'textPanel')
+        responseBodyTextCtrl = xrc.XRCCTRL(responseText, 'textCtrl')
+        response_body_text = parse_info.getBody('response')
+        responseBodyTextCtrl.SetValue(response_body_text)
         responseBook.AddPage(page=responseText, select=False, text="Text")
-        #========== End Response Tab ===========
         
+        responseRaw = self.res.LoadPanel(responseBook, 'textPanel')
+        responseRawTextCtrl = xrc.XRCCTRL(responseRaw, 'textCtrl')
+        response_raw_text = parse_info.raw('response')#.decode('utf-8', 'ignore')
+        response_raw_text = repr(response_raw_text)
+        responseRawTextCtrl.SetValue(response_raw_text)
+        responseBook.AddPage(page=responseRaw, select=False, text="Raw")
+        #========== End Response Tab ===========
         self.infoPanel.Thaw()
 
     def OnProxyStart(self, event):

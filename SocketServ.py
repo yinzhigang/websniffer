@@ -1,5 +1,6 @@
 # encoding: utf-8
-import socket, urlparse, SocketServer, rfc822, gzip, threading, BaseHTTPServer
+import sys
+import socket, urlparse, SocketServer, threading
 import select
 import tempfile
 try:
@@ -79,7 +80,7 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 #通知主窗口更新
                 CallAfter(self.server.window.DoNewRequest, (host, path, params, query), tf)
             except Exception, e:
-                print 'error', e
+                print 'error sock', e
             finally:
                 soc.close()
                 self.connection.close()
