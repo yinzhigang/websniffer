@@ -28,6 +28,8 @@ class MainFrame(wx.Frame):
         """加载资源并呼叫初始化"""
         self.Unbind(wx.EVT_WINDOW_CREATE)
         self.res = resource.GetResource()
+        icon = wx.Icon('images/websniffer.ico', wx.BITMAP_TYPE_ICO)
+        self.SetIcon(icon)
         wx.CallAfter(self._PostInit)
     
     def _PostInit(self):

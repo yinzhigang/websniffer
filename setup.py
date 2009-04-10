@@ -31,7 +31,7 @@ setup(
       windows=[{
                 "script": 'WebSniffer.py',
                 "other_resources": [(24,1,manifest)],
-                'icon_resources': [(1, 'websniffer.ico')]
+                'icon_resources': [(0, 'websniffer.ico')]
                 }],
       options = {"py2exe": {"optimize": 2,
                             "compressed": 1,
@@ -44,7 +44,7 @@ setup(
       author="yinzhigang",
       author_email="sxin.net@gmail.com",
       data_files = [
-        'websniffer.ico',
+        ('images', ['images/websniffer.ico']),
         ('images/toolbar', glob.glob("images/toolbar/*.png")),
         ('window', glob.glob('window/window.xrc')),
       ]
