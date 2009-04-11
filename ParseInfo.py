@@ -4,11 +4,7 @@ Created on Apr 6, 2009
 
 @author: yinzhigang
 '''
-#try:
-#    from cStringIO import StringIO
-#except ImportError:
-#    from StringIO import StringIO
-from StringIO import StringIO
+from cStringIO import StringIO
 import gzip
 
 import chardet

@@ -4,14 +4,8 @@ import wx
 from wx import xrc
 import wx.gizmos
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+from cStringIO import StringIO
+import cPickle as pickle
 
 import resource
 
@@ -60,7 +54,7 @@ class MainFrame(wx.Frame):
         self.info_notebook.DeleteAllPages()
         #========== General Tab ===========
         generalPanpel = self.res.LoadPanel(self.info_notebook, 'generalPanel')
-        self.info_notebook.AddPage(page=generalPanpel, select=True, text="General")
+        self.info_notebook.AddPage(page=generalPanpel, select=True, text=_("General"))
         
         generalBoxSizer = wx.BoxSizer(orient=wx.VERTICAL)
         treeListCtrl1 = wx.gizmos.TreeListCtrl(id=-1,
@@ -80,14 +74,14 @@ class MainFrame(wx.Frame):
         #========== End General Tab ===========
         #========== Request Tab ===========
         requestPanel = self.res.LoadPanel(self.info_notebook, 'notebookPanel')
-        self.info_notebook.AddPage(page=requestPanel, select=False, text="Request")
+        self.info_notebook.AddPage(page=requestPanel, select=False, text=_("Request"))
         
         requestBook = xrc.XRCCTRL(requestPanel, 'noteBook')
         
         requestHeader = self.res.LoadPanel(requestBook, 'textPanel')
         requestHeaderTextCtrl = xrc.XRCCTRL(requestHeader, 'textCtrl')
         request_header_text = parse_info.getHeader('request')
-        requestBook.AddPage(page=requestHeader, select=True, text="Headers")
+        requestBook.AddPage(page=requestHeader, select=True, text=_("Headers"))
         requestHeaderTextCtrl.SetValue(request_header_text)
         
         requestBody = self.res.LoadPanel(requestBook, 'textPanel')
@@ -105,7 +99,7 @@ class MainFrame(wx.Frame):
         #========== End Request Tab ===========
         #========== Response Tab ===========
         responsePanel = self.res.LoadPanel(self.info_notebook, 'notebookPanel')
-        self.info_notebook.AddPage(page=responsePanel, select=False, text="Response")
+        self.info_notebook.AddPage(page=responsePanel, select=False, text=_("Response"))
         
         responseBook = xrc.XRCCTRL(responsePanel, 'noteBook')
         

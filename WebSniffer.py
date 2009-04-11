@@ -11,6 +11,13 @@ import resource
 class WebSnifferApp(wx.App):
     
     def OnInit(self):
+        import __builtin__
+        __builtin__.__dict__['_'] = wx.GetTranslation
+        
+        L.Init(wx.LANGUAGE_CHINESE_SIMPLIFIED)
+        L.AddCatalogLookupPathPrefix(r'./locale')
+        L.AddCatalog('messages')
+
         self.res = resource.GetResource()
         self.init_frame()
         return True
@@ -22,5 +29,6 @@ class WebSnifferApp(wx.App):
         self.frame.Show()
 
 if __name__ == '__main__':
+    L = wx.Locale()
     app = WebSnifferApp(False)
     app.MainLoop()
