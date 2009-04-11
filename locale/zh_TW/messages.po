@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WebSniffer 0.1.0\n"
+"POT-Creation-Date: 2009-04-11 17:18+GMT\n"
+"PO-Revision-Date: 2009-04-11 18:10-0000\n"
+"Last-Translator: yinzhigang <sxin.net@gmail.com>\n"
+"Language-Team: yinzhigang <sxin.net@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Poedit-Language: Twi\n"
+"X-Poedit-Country: TAIWAN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: MainFrame.py:57
+msgid "General"
+msgstr "標准信息"
+
+#: MainFrame.py:77
+msgid "Request"
+msgstr "請求信息"
+
+#: MainFrame.py:84
+#: MainFrame.py:109
+msgid "Headers"
+msgstr "元信息"
+
+#: MainFrame.py:90
+msgid "Cookies"
+msgstr ""
+
+#: MainFrame.py:97
+#: MainFrame.py:122
+msgid "Raw"
+msgstr "原始內容"
+
+#: MainFrame.py:102
+msgid "Response"
+msgstr "回復信息"
+
+#: MainFrame.py:115
+msgid "Text"
+msgstr "文本"
+
+#: window/messages.py:1
+msgid "Web Sniffer Debug Proxy"
+msgstr "WebSniffer"
+
+#: window/messages.py:2
+msgid "File"
+msgstr "檔案"
+
+#: window/messages.py:3
+msgid "New"
+msgstr "新建"
+
+#: window/messages.py:4
+msgid "Open..."
+msgstr "打開..."
+
+#: window/messages.py:5
+msgid "Preferences..."
+msgstr "設置..."
+
+#: window/messages.py:6
+msgid "Exit"
+msgstr "退出"
+
+#: window/messages.py:7
+msgid "Edit"
+msgstr "編輯"
+
+#: window/messages.py:8
+#: window/messages.py:9
+#: window/messages.py:10
+msgid "MyMenuItem"
+msgstr ""
+
+#: window/messages.py:11
+msgid "Help"
+msgstr "幫助"
+
+#: window/messages.py:12
+msgid "About..."
+msgstr "關於..."
+
+#: window/messages.py:13
+#: window/messages.py:14
+msgid "tool"
+msgstr ""
+
+#: window/messages.py:15
+msgid "Start Proxy"
+msgstr ""
+
+#: window/messages.py:16
+msgid "Setting"
+msgstr "設置..."
+
+#~ msgid "View"
+#~ msgstr "查看"
+

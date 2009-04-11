@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2009-04-11 11:19+中国标准时间\n"
+"POT-Creation-Date: 2009-04-11 17:18+GMT\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,75 +15,83 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: MainFrame.py:63
+#: ./MainFrame.py:57
 msgid "General"
 msgstr ""
 
-#: MainFrame.py:83
+#: ./MainFrame.py:77
 msgid "Request"
 msgstr ""
 
-#: MainFrame.py:90
+#: ./MainFrame.py:84 ./MainFrame.py:109
 msgid "Headers"
 msgstr ""
 
-#: MainFrame.py:108
+#: ./MainFrame.py:90
+msgid "Cookies"
+msgstr ""
+
+#: ./MainFrame.py:97 ./MainFrame.py:122
+msgid "Raw"
+msgstr ""
+
+#: ./MainFrame.py:102
 msgid "Response"
 msgstr ""
 
-#: MainFrame.py:115
-msgid "Heasers"
+#: ./MainFrame.py:115
+msgid "Text"
 msgstr ""
 
-#: test.py:1
+#: ./window/messages.py:1
 msgid "Web Sniffer Debug Proxy"
 msgstr ""
 
-#: test.py:2
-msgid "MyMenuBar"
-msgstr ""
-
-#: test.py:3
+#: ./window/messages.py:2
 msgid "File"
 msgstr ""
 
-#: test.py:4
+#: ./window/messages.py:3
 msgid "New"
 msgstr ""
 
-#: test.py:5
+#: ./window/messages.py:4
 msgid "Open..."
 msgstr ""
 
-#: test.py:6
+#: ./window/messages.py:5
 msgid "Preferences..."
 msgstr ""
 
-#: test.py:7
+#: ./window/messages.py:6
 msgid "Exit"
 msgstr ""
 
-#: test.py:8
+#: ./window/messages.py:7
 msgid "Edit"
 msgstr ""
 
-#: test.py:9 test.py:10 test.py:11 test.py:13 test.py:14 test.py:15
+#: ./window/messages.py:8 ./window/messages.py:9 ./window/messages.py:10
 msgid "MyMenuItem"
 msgstr ""
 
-#: test.py:12
-msgid "View"
+#: ./window/messages.py:11
+msgid "Help"
 msgstr ""
 
-#: test.py:16 test.py:17
+#: ./window/messages.py:12
+msgid "About..."
+msgstr ""
+
+#: ./window/messages.py:13 ./window/messages.py:14
 msgid "tool"
 msgstr ""
 
-#: test.py:18
+#: ./window/messages.py:15
 msgid "Start Proxy"
 msgstr ""
 
-#: test.py:19
-msgid "Segging"
+#: ./window/messages.py:16
+msgid "Setting"
 msgstr ""
 

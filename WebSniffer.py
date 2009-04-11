@@ -14,7 +14,8 @@ class WebSnifferApp(wx.App):
         import __builtin__
         __builtin__.__dict__['_'] = wx.GetTranslation
         
-        L.Init(wx.LANGUAGE_CHINESE_SIMPLIFIED)
+#        L.Init(wx.LANGUAGE_CHINESE_SIMPLIFIED)
+        L.Init(L.GetSystemLanguage())
         L.AddCatalogLookupPathPrefix(r'./locale')
         L.AddCatalog('messages')
 
