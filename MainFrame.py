@@ -61,12 +61,17 @@ class MainFrame(wx.Frame):
               name='treeListCtrl1', parent=generalPanpel,
               size=generalPanpel.GetSize(),
               style=wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_DEFAULT_STYLE)
-        treeListCtrl1.AddColumn(text=u'Name', width=300)
-        treeListCtrl1.AddColumn(text=u'Value', width=200)
+        treeListCtrl1.AddColumn(text=_('Name'), width=150)
+        treeListCtrl1.AddColumn(text=_('Value'), width=350)
         root = treeListCtrl1.AddRoot('root')
-        hostItem = treeListCtrl1.AppendItem(root, 'Host:')
-        treeListCtrl1.SetItemText(hostItem, 'www.blogbus.com', 1)
-        clientItem = treeListCtrl1.AppendItem(root, 'Client:')
+        urlItem = treeListCtrl1.AppendItem(root, _('URL:'))
+        treeListCtrl1.SetItemText(urlItem, parse_info.getUrl(), 1)
+        hostItem = treeListCtrl1.AppendItem(root, _('Host:'))
+        treeListCtrl1.SetItemText(hostItem, parse_info.getHost(), 1)
+        clientItem = treeListCtrl1.AppendItem(root, _('Client:'))
+        treeListCtrl1.SetItemText(clientItem, parse_info.getClient(), 1)
+        contentTypeItem = treeListCtrl1.AppendItem(root, _('Content-Type'))
+        treeListCtrl1.SetItemText(contentTypeItem, parse_info['Content-Type'], 1)
         treeListCtrl1.Expand(root)
         
         generalPanpel.SetSizer(generalBoxSizer)

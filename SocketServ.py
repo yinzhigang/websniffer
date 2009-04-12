@@ -3,14 +3,7 @@ import sys
 import socket, urlparse, SocketServer, threading
 import select
 import tempfile
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import cPickle as pickle
 
 from wx import CallAfter
 import ParseInfo
@@ -20,24 +13,19 @@ _blanklines = ('\r\n', '\n')
 class ProxyRequestHandler(SocketServer.StreamRequestHandler):
     
     def handle(self):
-        """
-        处理请求
-        """
+        """处理请求"""
         raw_requestline = self.rfile.readline()
         if raw_requestline:
             if raw_requestline[-2:] == '\r\n':
                 reline = '\r\n'
             elif raw_requestline[-1:] == '\n':
                 reline = '\n'
-            [command, path, version] = raw_requestline.split()
-#            headers = rfc822.Message(self.rfile, 0)
-            (scm, host, path, params, query, fragment) = urlparse.urlparse(path)
+            [command, url, version] = raw_requestline.split()
+            (scm, host, path, params, query, fragment) = urlparse.urlparse(url)
             
             parse_info = ParseInfo.ParseInfo()
-#            
-#            headers['Connection'] = 'close'
-#            del headers['Proxy-Connection']
-#            print command, urlparse.urlunparse(('', '', path, params, query, ''))
+            parse_info.setUrl(url)
+            parse_info.setClient(self.client_address)
             
             soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
@@ -47,6 +35,8 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 else:
                     host_port = host, 80
                 soc.connect(host_port)
+                parse_info.setHost(host, soc.getpeername())
+#                print soc.getpeername()
                 
                 url = urlparse.urlunparse(('', '', path, params, query, ''))
                 request_url_command = "%s %s %s%s" % (command, url, version, reline)
@@ -54,24 +44,24 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 soc.send(request_url_command)
                 parse_info.write('request', request_url_command)
                 
-                while 1:
+                conttent_len = None
+                while True:
                     line = self.rfile.readline()
                     if not line:
                         break
                     if line[:16].lower() == 'proxy-connection':
                         line = "Connection: close%s" % (reline)
+                    if line[:14].lower() == 'content-length':
+                        content_len = int(line[15:])
                     soc.send(line)
                     parse_info.write('request', line)
                     if line in _blanklines:
+                        if command.lower() == "post":
+                            postdata = self.rfile.read(content_len)
+                            if postdata:
+                                soc.send(postdata)
+                                parse_info.write('request', postdata)
                         break
-                
-#                for key_val in headers.items():
-#                    header = "%s: %s\r\n" % key_val
-#                    soc.send(header)
-#                    parse_info.write('request', header)
-                
-#                soc.send("\r\n")
-#                parse_info.write('request', "\r\n")
                 self._read_write(soc, parse_info)
                 
                 parse_info.parse()
@@ -110,38 +100,6 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
             else:
                 print "\t" "idle", count
             if count == max_idling: break
-#        
-#        rfile = soc.makefile('rw', -1)
-##        for i in rfile:
-##            print i
-##            print ''.join(map(lambda c: "%02X" % ord(c), i))
-#        raw_responseline = rfile.readline()
-#        self.wfile.write(raw_responseline)
-#        headers = rfc822.Message(rfile, 0)
-#        encoding = headers.get('Content-Encoding', '')
-#        content_type = headers.get('Content-Type', '')
-#        content = []
-#        if headers.get('Transfer-Encoding') == 'chunked':
-#            chunk_size = int(rfile.readline()[:-2], 16)
-#            while chunk_size > 0:
-#                content.append(rfile.read(chunk_size))
-#                rfile.read(2)
-#                chunk_size = int(rfile.readline()[:-2], 16)
-#        else:
-#            for i in rfile:
-#                content.append(i)
-#        content = "".join(content)
-#        del headers['Transfer-Encoding']
-#        headers['Content-Length'] = str(len(content))
-#        self.wfile.write(headers)
-#        self.wfile.write('\r\n')
-#        self.wfile.write(content)
-#        if encoding == 'gzip' and content_type[:4] == 'text':
-#            print gzip.GzipFile(fileobj=StringIO(content)).read()
-#        elif content_type[:4] == 'text':
-#            print content
-#        else:
-#            print 'no text', content_type
 
 class MBThreadingTCPServer(SocketServer.ThreadingTCPServer):
     
@@ -185,6 +143,3 @@ class StartServer(threading.Thread):
         self.server.server_close()
         CallAfter(self.window.LogWindow, 'SocketServ Stoped')
 
-if __name__ == '__main__':
-    server = MBThreadingTCPServer(('', 8789), ProxyRequestHandler)
-    server.serve_forever()
