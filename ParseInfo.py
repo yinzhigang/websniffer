@@ -5,7 +5,7 @@ Created on Apr 6, 2009
 @author: yinzhigang
 '''
 from StringIO import StringIO
-import rfc822, Cookie
+import Cookie, httplib
 import gzip
 
 import chardet
@@ -29,22 +29,22 @@ class ParseInfo(object):
         #request header
         self.request.seek(0)
         self.request_commend = self.request.readline()
-        self.request_header = rfc822.Message(self.request)
+        self.request_header = httplib.HTTPMessage(self.request)
 #        for line in self.request:
 #            if not line: break
 #            if line in _blanklines: break
 #            key, value = line.split(':', 1)
 #            self.request_header[key] = value
         #request body
-        self.requst_body = ''.join(self.request.readlines())
-        request_body_encode = chardet.detect(self.requst_body).get('encoding')
+        self.request_body = ''.join(self.request.readlines())
+        request_body_encode = chardet.detect(self.request_body).get('encoding')
         if request_body_encode:
             self.request_body = self.request_body.decode(request_body_encode, 'replace')
         
         #response header
         self.response.seek(0)
         self.response_commend = self.response.readline()
-        self.response_header = rfc822.Message(self.response)
+        self.response_header = httplib.HTTPMessage(self.response)
 #        for line in self.response:
 #            if not line: break
 #            if line in _blanklines: break
@@ -77,7 +77,7 @@ class ParseInfo(object):
         del self.request
         del self.response
 
-    def getHeader(self, method):
+    def getHeaderText(self, method):
         """获取请求或返回的元信息"""
         if method == 'request':
             header = self.request_header
@@ -87,20 +87,27 @@ class ParseInfo(object):
             headers = [self.response_commend]
         for item in header.headers:
             headers.append(item)
-#        for key, value in header.items():
-#            headers.append('%s: %s' % (key, value))
         return ''.join(headers)
     
-    def getBody(self, method):
+    def header(self, method, name):
         if method == 'request':
-            return self.requst_body
+            header = self.request_header
+        elif method == 'response':
+            header = self.response_header
+        return header.get(name, '')
+    
+    def getBodyContent(self, method):
+        if method == 'request':
+            return self.request_body
         elif method == 'response':
             return self.response_body
     
     def setUrl(self, url):
+        """save fullurl with host"""
         self.url = url
     
     def getUrl(self):
+        """return fullurl whith host"""
         return self.url
     
     def setHost(self, host, peername):
@@ -109,15 +116,28 @@ class ParseInfo(object):
         self.peername = peername
     
     def getHost(self):
-        """return request host"""
+        """return request host with ip and port"""
         ip, port = self.peername
         return "%s/%s:%s" % (self.host, ip, port)
     
     def setClient(self, client):
+        """client ip and port"""
         self.client = client
     
     def getClient(self):
+        """return client ip and port"""
         return "%s:%s" % self.client
+    
+    def cookie(self, method):
+        if method == 'request':
+            cookie = self.header('request', 'cookie')
+        elif method == 'response':
+            cookie = self.header('response', 'Set-Cookie')
+        if cookie:
+            C = Cookie.SimpleCookie(cookie)
+            return C
+        else:
+            return None
 
     def raw(self, method):
         """获取原始信息"""
@@ -126,5 +146,3 @@ class ParseInfo(object):
         elif method == 'response':
             return self.raw_response
 
-    def __getitem__(self, name):
-        return self.response_header.get(name, '')

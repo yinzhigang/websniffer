@@ -6,6 +6,7 @@ import wx.gizmos
 
 from cStringIO import StringIO
 import cPickle as pickle
+import urllib
 
 import resource
 
@@ -70,8 +71,8 @@ class MainFrame(wx.Frame):
         treeListCtrl1.SetItemText(hostItem, parse_info.getHost(), 1)
         clientItem = treeListCtrl1.AppendItem(root, _('Client:'))
         treeListCtrl1.SetItemText(clientItem, parse_info.getClient(), 1)
-        contentTypeItem = treeListCtrl1.AppendItem(root, _('Content-Type'))
-        treeListCtrl1.SetItemText(contentTypeItem, parse_info['Content-Type'], 1)
+        contentTypeItem = treeListCtrl1.AppendItem(root, _('Content-Type:'))
+        treeListCtrl1.SetItemText(contentTypeItem, parse_info.header('response', 'Content-Type'), 1)
         treeListCtrl1.Expand(root)
         
         generalPanpel.SetSizer(generalBoxSizer)
@@ -85,15 +86,22 @@ class MainFrame(wx.Frame):
         
         requestHeader = self.res.LoadPanel(requestBook, 'textPanel')
         requestHeaderTextCtrl = xrc.XRCCTRL(requestHeader, 'textCtrl')
-        request_header_text = parse_info.getHeader('request')
+        request_header_text = parse_info.getHeaderText('request')
         requestBook.AddPage(page=requestHeader, select=True, text=_("Headers"))
         requestHeaderTextCtrl.SetValue(request_header_text)
         
-        requestBody = self.res.LoadPanel(requestBook, 'textPanel')
-        requestBodyTextCtrl = xrc.XRCCTRL(requestBody, 'textCtrl')
-        request_body_text = parse_info.getBody('request')
-        requestBook.AddPage(page=requestBody, select=False, text=_("Cookies"))
-        requestBodyTextCtrl.SetValue(request_body_text)
+        request_cookie = parse_info.cookie('request')
+        if request_cookie:
+            requestCookie = self.res.LoadPanel(requestBook, 'listPanel')
+            requestCookieListCtrl = xrc.XRCCTRL(requestCookie, 'listCtrl')
+            requestBook.AddPage(page=requestCookie, select=False, text=_("Cookies"))
+            requestCookieListCtrl.InsertColumn(0, _('Key'), width=150)
+            requestCookieListCtrl.InsertColumn(1, _('Value'), width=350)
+            i = 0
+            for key, value in request_cookie.items():
+                cookieItem = requestCookieListCtrl.InsertStringItem(i, label=key)
+                requestCookieListCtrl.SetStringItem(cookieItem, 1, urllib.unquote_plus(value.value))
+                i += 1
         
         requestRaw = self.res.LoadPanel(requestBook, 'textPanel')
         requestRawTextCtrl = xrc.XRCCTRL(requestRaw, 'textCtrl')
@@ -110,15 +118,44 @@ class MainFrame(wx.Frame):
         
         responseHeader = self.res.LoadPanel(responseBook, 'textPanel')
         responseHeaderTextCtrl = xrc.XRCCTRL(responseHeader, 'textCtrl')
-        response_header_text = parse_info.getHeader('response')
+        response_header_text = parse_info.getHeaderText('response')
         responseBook.AddPage(page=responseHeader, select=True, text=_("Headers"))
         responseHeaderTextCtrl.SetValue(response_header_text)
         
-        responseText = self.res.LoadPanel(responseBook, 'textPanel')
-        responseBodyTextCtrl = xrc.XRCCTRL(responseText, 'textCtrl')
-        response_body_text = parse_info.getBody('response')
-        responseBook.AddPage(page=responseText, select=False, text=_("Text"))
-        responseBodyTextCtrl.SetValue(response_body_text)
+        response_cookie = parse_info.cookie('response')
+        if response_cookie:
+            responseCookie = self.res.LoadPanel(responseBook, 'listPanel')
+            responseCookieListCtrl = xrc.XRCCTRL(responseCookie, 'listCtrl')
+            responseBook.AddPage(page=responseCookie, select=False, text=_("Cookies"))
+            responseCookieListCtrl.InsertColumn(0, _('Key'), width=150)
+            responseCookieListCtrl.InsertColumn(1, _('Value'), width=350)
+            responseCookieListCtrl.InsertColumn(2, _('Domain'), width=100)
+            responseCookieListCtrl.InsertColumn(3, _('Path'), width=100)
+            i = 0
+            for key, value in response_cookie.items():
+                cookieItem = responseCookieListCtrl.InsertStringItem(i, label=key)
+                responseCookieListCtrl.SetStringItem(cookieItem, 1, urllib.unquote_plus(value.value))
+                responseCookieListCtrl.SetStringItem(cookieItem, 2, urllib.unquote_plus(value['domain']))
+                responseCookieListCtrl.SetStringItem(cookieItem, 3, urllib.unquote_plus(value['path']))
+                i += 1
+        
+        content_type = parse_info.header('response', 'Content-Type')
+        if content_type[:5] == 'image':
+            try:
+                responseBody = self.res.LoadPanel(responseBook, 'imagePanel')
+                responseBodyImageCtrl = xrc.XRCCTRL(responseBody, 'image')
+                response_body_image = StringIO(parse_info.getBodyContent('response'))
+                image = wx.ImageFromStreamMime(response_body_image, content_type).ConvertToBitmap()
+                responseBook.AddPage(page=responseBody, select=False, text=_("Image"))
+                responseBodyImageCtrl.SetBitmap(image)
+            except Exception, e:
+                pass
+        else:
+            responseBody = self.res.LoadPanel(responseBook, 'textPanel')
+            responseBodyTextCtrl = xrc.XRCCTRL(responseBody, 'textCtrl')
+            response_body_text = parse_info.getBodyContent('response')
+            responseBook.AddPage(page=responseBody, select=False, text=_("Text"))
+            responseBodyTextCtrl.SetValue(response_body_text)
         
         responseRaw = self.res.LoadPanel(responseBook, 'textPanel')
         responseRawTextCtrl = xrc.XRCCTRL(responseRaw, 'textCtrl')

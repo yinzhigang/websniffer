@@ -35,7 +35,10 @@ class TextCtrl(wx.TextCtrl):
 
     def OnFocus(self, event):
         if self.text:
-            self.AppendText(self.text[20000:])
-            self.SetInsertionPoint(0)
-            self.text = None
+            try:
+                self.AppendText(self.text[20000:])
+                self.SetInsertionPoint(0)
+                self.text = None
+            except Exception, e:
+                pass
     

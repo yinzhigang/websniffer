@@ -44,7 +44,7 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 soc.send(request_url_command)
                 parse_info.write('request', request_url_command)
                 
-                conttent_len = None
+                content_len = None
                 while True:
                     line = self.rfile.readline()
                     if not line:
@@ -56,7 +56,7 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                     soc.send(line)
                     parse_info.write('request', line)
                     if line in _blanklines:
-                        if command.lower() == "post":
+                        if content_len:
                             postdata = self.rfile.read(content_len)
                             if postdata:
                                 soc.send(postdata)

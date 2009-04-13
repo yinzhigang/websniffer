@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WebSniffer 0.1.0\n"
-"POT-Creation-Date: 2009-04-11 17:18+GMT\n"
-"PO-Revision-Date: 2009-04-11 18:01-0000\n"
+"POT-Creation-Date: 2009-04-13 11:25+GMT\n"
+"PO-Revision-Date: 2009-04-13 11:25-0000\n"
 "Last-Translator: yinzhigang <sxin.net@gmail.com>\n"
 "Language-Team: yinzhigang <sxin.net@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,33 +17,77 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: MainFrame.py:57
+#: MainFrame.py:58
 msgid "General"
 msgstr "标准信息"
 
-#: MainFrame.py:77
+#: MainFrame.py:65
+msgid "Name"
+msgstr "名称"
+
+#: MainFrame.py:66
+#: MainFrame.py:99
+#: MainFrame.py:131
+msgid "Value"
+msgstr "值"
+
+#: MainFrame.py:68
+msgid "URL:"
+msgstr ""
+
+#: MainFrame.py:70
+msgid "Host:"
+msgstr ""
+
+#: MainFrame.py:72
+msgid "Client:"
+msgstr ""
+
+#: MainFrame.py:74
+msgid "Content-Type:"
+msgstr ""
+
+#: MainFrame.py:83
 msgid "Request"
 msgstr "请求信息"
 
-#: MainFrame.py:84
-#: MainFrame.py:109
+#: MainFrame.py:90
+#: MainFrame.py:122
 msgid "Headers"
 msgstr "元信息"
 
-#: MainFrame.py:90
+#: MainFrame.py:97
+#: MainFrame.py:129
 msgid "Cookies"
 msgstr ""
 
-#: MainFrame.py:97
-#: MainFrame.py:122
+#: MainFrame.py:98
+#: MainFrame.py:130
+msgid "Key"
+msgstr ""
+
+#: MainFrame.py:110
+#: MainFrame.py:165
 msgid "Raw"
 msgstr "原始内容"
 
-#: MainFrame.py:102
+#: MainFrame.py:115
 msgid "Response"
 msgstr "回应信息"
 
-#: MainFrame.py:115
+#: MainFrame.py:132
+msgid "Domain"
+msgstr ""
+
+#: MainFrame.py:133
+msgid "Path"
+msgstr ""
+
+#: MainFrame.py:149
+msgid "Image"
+msgstr "图像"
+
+#: MainFrame.py:158
 msgid "Text"
 msgstr "文本"
 
