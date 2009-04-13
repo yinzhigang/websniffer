@@ -201,7 +201,8 @@ class MainFrame(wx.Frame):
     def OnAbout(self, event):
         aboutDialog  = self.res.LoadDialog(None, 'aboutDialog')
         aboutDialog.Center()
-        aboutDialog.Show()
+        aboutDialog.ShowModal()
+        aboutDialog.Destroy()
         
     def OnExit(self, event):
         """退出窗口"""
