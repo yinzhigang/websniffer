@@ -59,7 +59,15 @@ elif sys.platform == 'linux2':
         name = "WebSniffer",
         version = "0.1.0",
         description = "The web debug proxy",
-        executables = [Executable("WebSniffer.py"),
-                       
-                       ]
-        )
+        data_files = [
+            ('images', ['images/websniffer.ico']),
+            ('images/toolbar', glob.glob("images/toolbar/*.png")),
+            ('window', glob.glob('window/window.xrc')),
+        ],
+        options = dict(
+                     build_exe = dict(includes = ['MainFrame', 'RequestTree', 'TextCtrl'], packages=['encodings'],
+                     compressed = True,
+                     ),
+                  ),
+        executables = [Executable("WebSniffer.py")]
+    )
