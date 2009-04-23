@@ -29,6 +29,7 @@ class MainFrame(wx.Frame):
     
     def _PostInit(self):
         """初始化窗口控件"""
+        self.Bind(wx.EVT_MENU, self.OnPreferences, id=xrc.XRCID('menuPreferences'))
         self.Bind(wx.EVT_MENU, self.OnExit, id=xrc.XRCID('menuExit'))
         self.Bind(wx.EVT_MENU, self.OnAbout, id=xrc.XRCID('helpAboutMenu'))
         self.Bind(wx.EVT_TOOL, self.OnProxyStart, id=xrc.XRCID('toolBarStart'))
@@ -198,6 +199,13 @@ class MainFrame(wx.Frame):
     def LogWindow(self, message):
         print message
 
+    def OnPreferences(self, event):
+        preferences = self.res.LoadDialog(None, 'preferencesDialog')
+        preferences.Center()
+        if preferences.ShowModal() == wx.ID_OK:
+            pass
+        preferences.Destroy()
+    
     def OnAbout(self, event):
         aboutDialog  = self.res.LoadDialog(None, 'aboutDialog')
         aboutDialog.Center()
