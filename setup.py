@@ -71,3 +71,30 @@ elif sys.platform == 'linux2':
                   ),
         executables = [Executable("WebSniffer.py")]
     )
+elif sys.platform == 'darwin':
+    from distutils.core import setup
+    import py2app
+    
+    setup(
+        options=dict(
+            py2app=dict(
+                iconfile='images/websniffer.icns',
+                optimize = 2,
+                includes = ['MainFrame', 'RequestTree', 'TextCtrl'],
+                #resources=['resources/License.txt'],
+                plist=dict(
+                    CFBundleName               = "WebSniffer",
+                    CFBundleShortVersionString = "0.1.0",     # must be in X.X.X format
+                    CFBundleGetInfoString      = "WebSniffer 0.1.0",
+                    CFBundleExecutable         = "WebSniffer",
+                    CFBundleIdentifier         = "cn.websniffer.WebSniffer",
+                ),
+            ),
+        ),
+        data_files = [
+            ('images', ['images/websniffer.ico']),
+            ('images/toolbar', glob.glob("images/toolbar/*.png")),
+            ('window', glob.glob('window/window.xrc')),
+        ],
+        app=[ 'WebSniffer.py' ]
+    )
