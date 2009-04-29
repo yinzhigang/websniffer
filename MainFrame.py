@@ -32,7 +32,9 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnPreferences, id=xrc.XRCID('menuPreferences'))
         self.Bind(wx.EVT_MENU, self.OnExit, id=xrc.XRCID('menuExit'))
         self.Bind(wx.EVT_MENU, self.OnAbout, id=xrc.XRCID('helpAboutMenu'))
+        
         self.Bind(wx.EVT_TOOL, self.OnProxyStart, id=xrc.XRCID('toolBarStart'))
+        self.Bind(wx.EVT_TOOL, self.OnPreferences, id=xrc.XRCID('toolBarPreferences'))
         
         self.infoPanel = xrc.XRCCTRL(self, 'infoPanel')
         self.info_notebook = xrc.XRCCTRL(self, 'info_notebook')

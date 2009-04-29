@@ -115,7 +115,7 @@
                 <event name="OnSize"></event>
                 <event name="OnUpdateUI"></event>
                 <object class="wxMenu" expanded="1">
-                    <property name="label">File</property>
+                    <property name="label">&amp;File</property>
                     <property name="name">fileMenu</property>
                     <property name="permission">protected</property>
                     <object class="wxMenuItem" expanded="1">
@@ -149,7 +149,7 @@
                         <event name="OnUpdateUI"></event>
                     </object>
                     <object class="wxMenuItem" expanded="1">
-                        <property name="bitmap"></property>
+                        <property name="bitmap">images/menu/Preferences.png; Load From File</property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
                         <property name="help"></property>
@@ -183,7 +183,7 @@
                     </object>
                 </object>
                 <object class="wxMenu" expanded="1">
-                    <property name="label">Help</property>
+                    <property name="label">&amp;Help</property>
                     <property name="name">helpMenu</property>
                     <property name="permission">protected</property>
                     <object class="wxMenuItem" expanded="1">
@@ -193,7 +193,7 @@
                         <property name="help"></property>
                         <property name="id">wxID_ANY</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">About...</property>
+                        <property name="label">&amp;About...</property>
                         <property name="name">helpAboutMenu</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
@@ -257,7 +257,7 @@
                     <property name="label">Start Proxy</property>
                     <property name="name">toolBarStart</property>
                     <property name="statusbar"></property>
-                    <property name="tooltip"></property>
+                    <property name="tooltip">Start Proxy</property>
                     <event name="OnMenuSelection"></event>
                     <event name="OnToolClicked"></event>
                     <event name="OnToolEnter"></event>
@@ -268,10 +268,25 @@
                     <property name="bitmap">images/toolbar/Delete.png; Load From File</property>
                     <property name="id">wxID_ANY</property>
                     <property name="kind">wxITEM_NORMAL</property>
-                    <property name="label">Delete All</property>
+                    <property name="label">Clear All</property>
                     <property name="name">toolBarDelete</property>
                     <property name="statusbar"></property>
-                    <property name="tooltip"></property>
+                    <property name="tooltip">Clear All</property>
+                    <event name="OnMenuSelection"></event>
+                    <event name="OnToolClicked"></event>
+                    <event name="OnToolEnter"></event>
+                    <event name="OnToolRClicked"></event>
+                    <event name="OnUpdateUI"></event>
+                </object>
+                <object class="toolSeparator" expanded="1" />
+                <object class="tool" expanded="1">
+                    <property name="bitmap">images/toolbar/Preferences.png; Load From File</property>
+                    <property name="id">wxID_ANY</property>
+                    <property name="kind">wxITEM_NORMAL</property>
+                    <property name="label">Preferences</property>
+                    <property name="name">toolBarPreferences</property>
+                    <property name="statusbar"></property>
+                    <property name="tooltip">Preferences</property>
                     <event name="OnMenuSelection"></event>
                     <event name="OnToolClicked"></event>
                     <event name="OnToolEnter"></event>

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2009-04-13 11:25+GMT\n"
+"POT-Creation-Date: 2009-04-29 22:58+GMT\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,123 +15,161 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: ./MainFrame.py:58
+#: MainFrame.py:62 window/messages.py:16
 msgid "General"
 msgstr ""
 
-#: ./MainFrame.py:65
+#: MainFrame.py:69
 msgid "Name"
 msgstr ""
 
-#: ./MainFrame.py:66 ./MainFrame.py:99 ./MainFrame.py:131
+#: MainFrame.py:70 MainFrame.py:103 MainFrame.py:135
 msgid "Value"
 msgstr ""
 
-#: ./MainFrame.py:68
+#: MainFrame.py:72
 msgid "URL:"
 msgstr ""
 
-#: ./MainFrame.py:70
+#: MainFrame.py:74
 msgid "Host:"
 msgstr ""
 
-#: ./MainFrame.py:72
+#: MainFrame.py:76
 msgid "Client:"
 msgstr ""
 
-#: ./MainFrame.py:74
+#: MainFrame.py:78
 msgid "Content-Type:"
 msgstr ""
 
-#: ./MainFrame.py:83
+#: MainFrame.py:87
 msgid "Request"
 msgstr ""
 
-#: ./MainFrame.py:90 ./MainFrame.py:122
+#: MainFrame.py:94 MainFrame.py:126
 msgid "Headers"
 msgstr ""
 
-#: ./MainFrame.py:97 ./MainFrame.py:129
+#: MainFrame.py:101 MainFrame.py:133
 msgid "Cookies"
 msgstr ""
 
-#: ./MainFrame.py:98 ./MainFrame.py:130
+#: MainFrame.py:102 MainFrame.py:134
 msgid "Key"
 msgstr ""
 
-#: ./MainFrame.py:110 ./MainFrame.py:165
+#: MainFrame.py:114 MainFrame.py:168
 msgid "Raw"
 msgstr ""
 
-#: ./MainFrame.py:115
+#: MainFrame.py:119
 msgid "Response"
 msgstr ""
 
-#: ./MainFrame.py:132
+#: MainFrame.py:136
 msgid "Domain"
 msgstr ""
 
-#: ./MainFrame.py:133
+#: MainFrame.py:137
 msgid "Path"
 msgstr ""
 
-#: ./MainFrame.py:149
+#: MainFrame.py:153
 msgid "Image"
 msgstr ""
 
-#: ./MainFrame.py:158
+#: MainFrame.py:161
 msgid "Text"
 msgstr ""
 
-#: ./window/messages.py:1
+#: window/messages.py:1
 msgid "Web Sniffer Debug Proxy"
 msgstr ""
 
-#: ./window/messages.py:2
-msgid "File"
+#: window/messages.py:2
+msgid "&File"
 msgstr ""
 
-#: ./window/messages.py:3
+#: window/messages.py:3
 msgid "New"
 msgstr ""
 
-#: ./window/messages.py:4
+#: window/messages.py:4
 msgid "Open..."
 msgstr ""
 
-#: ./window/messages.py:5
+#: window/messages.py:5 window/messages.py:15
 msgid "Preferences..."
 msgstr ""
 
-#: ./window/messages.py:6
+#: window/messages.py:6
 msgid "Exit"
 msgstr ""
 
-#: ./window/messages.py:7
-msgid "Edit"
+#: window/messages.py:7
+msgid "&Help"
 msgstr ""
 
-#: ./window/messages.py:8 ./window/messages.py:9 ./window/messages.py:10
-msgid "MyMenuItem"
-msgstr ""
-
-#: ./window/messages.py:11
-msgid "Help"
-msgstr ""
-
-#: ./window/messages.py:12
+#: window/messages.py:8
 msgid "About..."
 msgstr ""
 
-#: ./window/messages.py:13 ./window/messages.py:14
-msgid "tool"
-msgstr ""
-
-#: ./window/messages.py:15
+#: window/messages.py:9 window/messages.py:10
 msgid "Start Proxy"
 msgstr ""
 
-#: ./window/messages.py:16
-msgid "Setting"
+#: window/messages.py:11 window/messages.py:12
+msgid "Clear All"
+msgstr ""
+
+#: window/messages.py:13 window/messages.py:14
+msgid "Preferences"
+msgstr ""
+
+#: window/messages.py:17
+msgid "HTTP Proxy"
+msgstr ""
+
+#: window/messages.py:18
+msgid "Address:"
+msgstr ""
+
+#: window/messages.py:19
+msgid "Port:"
+msgstr ""
+
+#: window/messages.py:20
+msgid "&OK"
+msgstr ""
+
+#: window/messages.py:21
+msgid "&Cancel"
+msgstr ""
+
+#: window/messages.py:22
+msgid "About WebSniffer"
+msgstr ""
+
+#: window/messages.py:23
+msgid "WebSniffer 0.1.0 preview"
+msgstr ""
+
+#: window/messages.py:24
+msgid "The Web Debug Proxy"
+msgstr ""
+
+#: window/messages.py:25
+msgid ""
+"Copyright 2009 yinzhigang \n"
+"<sxin.net@gmail.com>"
+msgstr ""
+
+#: window/messages.py:26
+msgid "  ProjectHome:"
+msgstr ""
+
+#: window/messages.py:27
+msgid "http://sourceforge.net/projects/websniffer/"
 msgstr ""
 
