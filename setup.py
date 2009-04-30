@@ -7,7 +7,7 @@ data_files = [
             ('images/menu', glob.glob("images/menu/*.png")),
             ('window', glob.glob('window/window.xrc')),
             ]
-includes = ['MainFrame', 'RequestTree', 'TextCtrl', 'Preferences']
+include_modules = ['MainFrame', 'RequestTree', 'TextCtrl', 'Preferences']
 
 if sys.platform == 'win32':
     from distutils.core import setup
@@ -38,7 +38,7 @@ if sys.platform == 'win32':
     </dependency>
     </assembly>
     """
-    
+    include_modules.append('dbhash')
     setup(
           windows=[{
                     "script": 'WebSniffer.py',
@@ -47,7 +47,7 @@ if sys.platform == 'win32':
                     }],
           options = {"py2exe": {"optimize": 2,
                                 "compressed": 1,
-                                'includes': includes,
+                                'includes': include_modules,
                                 "bundle_files": 1}},
           zipfile = None,
           name="WebSniffer",
@@ -66,7 +66,7 @@ elif sys.platform == 'linux2':
         description = "The web debug proxy",
         data_files = data_files,
         options = dict(
-                     build_exe = dict(includes = includes,
+                     build_exe = dict(includes = include_modules,
                                 packages=['encodings'],
                                 compressed = True,
                                 ),
@@ -82,7 +82,7 @@ elif sys.platform == 'darwin':
             py2app=dict(
                 iconfile='images/websniffer.icns',
                 optimize = 2,
-                includes = includes,
+                includes = include_modules,
                 #resources=['resources/License.txt'],
                 plist=dict(
                     CFBundleName               = "WebSniffer",
