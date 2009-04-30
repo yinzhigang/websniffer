@@ -129,7 +129,6 @@ class StartServer(threading.Thread):
         self.window = window
     
     def run(self):
-        CallAfter(self.window.LogWindow, 'SocketServ Started')
         self.server = MBThreadingTCPServer(self.address_tuple, ProxyRequestHandler, self.window)
         self.server.serve_forever()
     
@@ -142,7 +141,5 @@ class StartServer(threading.Thread):
             pass
         finally:
             close_sock.close()
-        CallAfter(self.window.LogWindow, 'SocketServ Stoping')
         self.server.server_close()
-        CallAfter(self.window.LogWindow, 'SocketServ Stoped')
 

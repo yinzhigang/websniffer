@@ -36,6 +36,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnAbout, id=xrc.XRCID('helpAboutMenu'))
         
         self.Bind(wx.EVT_TOOL, self.OnProxyStart, id=xrc.XRCID('toolBarStart'))
+        self.Bind(wx.EVT_TOOL, self.OnClearAll, id=xrc.XRCID('toolBarClearAll'))
         self.Bind(wx.EVT_TOOL, self.OnPreferences, id=xrc.XRCID('toolBarPreferences'))
         
         self.infoPanel = xrc.XRCCTRL(self, 'infoPanel')
@@ -198,10 +199,12 @@ class MainFrame(wx.Frame):
         url = urlparse.urlunparse(('', '', path, params, query, ''))
         request = self.request_tree.AppendItem(host_item, url)
         self.request_tree.SetItemPyData(request, data)
-    
-    def LogWindow(self, message):
-        print message
 
+    def OnClearAll(self, event):
+        self.request_tree.DeleteChildren(self.tree_root)
+        self.info_notebook.DeleteAllPages()
+        Cache.ClearCache(init=True)
+    
     def OnPreferences(self, event):
         """打开设置窗口"""
         preferences = self.res.LoadDialog(None, 'preferencesDialog')
@@ -221,7 +224,11 @@ class MainFrame(wx.Frame):
         aboutDialog.Center()
         aboutDialog.ShowModal()
         aboutDialog.Destroy()
-        
+    
     def OnExit(self, event):
         """退出窗口"""
         self.Close(True)
+    
+    def __del__(self):
+        """退出程序时清除缓存"""
+        Cache.ClearCache()

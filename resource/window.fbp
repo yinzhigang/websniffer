@@ -284,7 +284,7 @@
                     <property name="id">wxID_ANY</property>
                     <property name="kind">wxITEM_NORMAL</property>
                     <property name="label">Clear All</property>
-                    <property name="name">toolBarDelete</property>
+                    <property name="name">toolBarClearAll</property>
                     <property name="statusbar"></property>
                     <property name="tooltip">Clear All</property>
                     <event name="OnMenuSelection"></event>
