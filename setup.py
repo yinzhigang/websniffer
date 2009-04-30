@@ -1,4 +1,13 @@
+# encoding: utf-8
 import sys, glob
+
+data_files = [
+            ('images', ['images/websniffer.ico']),
+            ('images/toolbar', glob.glob("images/toolbar/*.png")),
+            ('images/menu', glob.glob("images/menu/*.png")),
+            ('window', glob.glob('window/window.xrc')),
+            ]
+includes = ['MainFrame', 'RequestTree', 'TextCtrl', 'Preferences']
 
 if sys.platform == 'win32':
     from distutils.core import setup
@@ -38,7 +47,7 @@ if sys.platform == 'win32':
                     }],
           options = {"py2exe": {"optimize": 2,
                                 "compressed": 1,
-                                'includes': ['MainFrame', 'RequestTree', 'TextCtrl'],
+                                'includes': includes,
                                 "bundle_files": 1}},
           zipfile = None,
           name="WebSniffer",
@@ -46,11 +55,7 @@ if sys.platform == 'win32':
           version='0.1.0',
           author="yinzhigang",
           author_email="sxin.net@gmail.com",
-          data_files = [
-            ('images', ['images/websniffer.ico']),
-            ('images/toolbar', glob.glob("images/toolbar/*.png")),
-            ('window', glob.glob('window/window.xrc')),
-          ]
+          data_files = data_files
           )
 elif sys.platform == 'linux2':
     from cx_Freeze import setup, Executable
@@ -59,15 +64,12 @@ elif sys.platform == 'linux2':
         name = "WebSniffer",
         version = "0.1.0",
         description = "The web debug proxy",
-        data_files = [
-            ('images', ['images/websniffer.ico']),
-            ('images/toolbar', glob.glob("images/toolbar/*.png")),
-            ('window', glob.glob('window/window.xrc')),
-        ],
+        data_files = data_files,
         options = dict(
-                     build_exe = dict(includes = ['MainFrame', 'RequestTree', 'TextCtrl'], packages=['encodings'],
-                     compressed = True,
-                     ),
+                     build_exe = dict(includes = includes,
+                                packages=['encodings'],
+                                compressed = True,
+                                ),
                   ),
         executables = [Executable("WebSniffer.py")]
     )
@@ -80,7 +82,7 @@ elif sys.platform == 'darwin':
             py2app=dict(
                 iconfile='images/websniffer.icns',
                 optimize = 2,
-                includes = ['MainFrame', 'RequestTree', 'TextCtrl'],
+                includes = includes,
                 #resources=['resources/License.txt'],
                 plist=dict(
                     CFBundleName               = "WebSniffer",
@@ -91,10 +93,6 @@ elif sys.platform == 'darwin':
                 ),
             ),
         ),
-        data_files = [
-            ('images', ['images/websniffer.ico']),
-            ('images/toolbar', glob.glob("images/toolbar/*.png")),
-            ('window', glob.glob('window/window.xrc')),
-        ],
+        data_files = data_files,
         app=[ 'WebSniffer.py' ]
     )

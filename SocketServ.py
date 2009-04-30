@@ -7,6 +7,7 @@ import cPickle as pickle
 
 from wx import CallAfter
 import ParseInfo
+from DataCache import Cache
 
 _blanklines = ('\r\n', '\n')
 
@@ -65,10 +66,12 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 self._read_write(soc, parse_info)
                 
                 parse_info.parse()
-                tf = tempfile.TemporaryFile()
-                dump = pickle.dump(parse_info, file=tf, protocol=1)
+                
+                cache_key = Cache.RandomString()
+                dump = pickle.dumps(parse_info, protocol=1)
+                Cache.Set(cache_key, dump)
                 #通知主窗口更新
-                CallAfter(self.server.window.DoNewRequest, (host, path, params, query), tf)
+                CallAfter(self.server.window.DoNewRequest, (host, path, params, query), cache_key)
             except Exception, e:
                 print 'error sock', e
             finally:

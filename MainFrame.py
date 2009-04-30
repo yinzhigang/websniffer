@@ -9,6 +9,7 @@ import cPickle as pickle
 import urllib
 
 import resource
+from DataCache import Cache
 
 class MainFrame(wx.Frame):
     """主窗口"""
@@ -49,8 +50,7 @@ class MainFrame(wx.Frame):
         item = event.GetItem()
         if self.request_tree.ItemHasChildren(item) is False:
             data = self.request_tree.GetItemPyData(item)
-            data.seek(0)
-            parse_info = pickle.load(data)
+            parse_info = pickle.loads(Cache.Get(data))
             self.ShowInfo(parse_info)
     
     def ShowInfo(self, parse_info):
@@ -173,12 +173,12 @@ class MainFrame(wx.Frame):
     def OnProxyStart(self, event):
         import SocketServ
         if event.IsChecked():
+            Cache.Init()  #初始化缓存
             self.thread = SocketServ.StartServer('SocketServ', self)
             self.thread.setDaemon(1)
             self.thread.start()
         else:
             self.thread.stop()
-            print 'Server Stop'
 
     def DoNewRequest(self, path, data = ''):
         """添加请求到树中"""
