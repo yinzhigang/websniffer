@@ -6,6 +6,8 @@ Created on Mar 21, 2009
 @author: sxin
 '''
 import wx
+from wx import xrc
+
 import resource
 
 class WebSnifferApp(wx.App):
@@ -24,6 +26,12 @@ class WebSnifferApp(wx.App):
         return True
     
     def init_frame(self):
+        if wx.Platform=="__WXMAC__":
+            self.SetMacHelpMenuTitleName(_('&Help'))
+            self.SetMacExitMenuItemId(xrc.XRCID('menuExit'))
+            self.SetMacAboutMenuItemId(xrc.XRCID('helpAboutMenu'))
+            self.SetMacPreferencesMenuItemId(xrc.XRCID('menuPreferences'))
+        
         self.frame = self.res.LoadFrame(None, 'mainFrame')
         self.frame.SetSize(wx.Size(800,600))
         self.frame.Center()
