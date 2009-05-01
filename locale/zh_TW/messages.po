@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WebSniffer 0.1.0\n"
-"POT-Creation-Date: 2009-04-11 17:18+GMT\n"
-"PO-Revision-Date: 2009-04-11 18:10-0000\n"
+"POT-Creation-Date: 2009-04-30 01:08+GMT\n"
+"PO-Revision-Date: 2009-04-30 20:54-0000\n"
 "Last-Translator: yinzhigang <sxin.net@gmail.com>\n"
 "Language-Team: yinzhigang <sxin.net@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,43 +17,93 @@ msgstr ""
 "X-Poedit-Country: TAIWAN\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: MainFrame.py:57
+#: MainFrame.py:62
+#: window/messages.py:16
 msgid "General"
 msgstr "標准信息"
 
-#: MainFrame.py:77
+#: MainFrame.py:69
+msgid "Name"
+msgstr ""
+
+#: MainFrame.py:70
+#: MainFrame.py:103
+#: MainFrame.py:135
+msgid "Value"
+msgstr ""
+
+#: MainFrame.py:72
+msgid "URL:"
+msgstr ""
+
+#: MainFrame.py:74
+msgid "Host:"
+msgstr ""
+
+#: MainFrame.py:76
+msgid "Client:"
+msgstr ""
+
+#: MainFrame.py:78
+msgid "Content-Type:"
+msgstr ""
+
+#: MainFrame.py:87
 msgid "Request"
 msgstr "請求信息"
 
-#: MainFrame.py:84
-#: MainFrame.py:109
+#: MainFrame.py:94
+#: MainFrame.py:126
 msgid "Headers"
 msgstr "元信息"
 
-#: MainFrame.py:90
+#: MainFrame.py:101
+#: MainFrame.py:133
 msgid "Cookies"
 msgstr ""
 
-#: MainFrame.py:97
-#: MainFrame.py:122
+#: MainFrame.py:102
+#: MainFrame.py:134
+msgid "Key"
+msgstr ""
+
+#: MainFrame.py:114
+#: MainFrame.py:168
 msgid "Raw"
 msgstr "原始內容"
 
-#: MainFrame.py:102
+#: MainFrame.py:119
 msgid "Response"
 msgstr "回復信息"
 
-#: MainFrame.py:115
+#: MainFrame.py:136
+msgid "Domain"
+msgstr ""
+
+#: MainFrame.py:137
+msgid "Path"
+msgstr ""
+
+#: MainFrame.py:153
+msgid "Image"
+msgstr "圖像"
+
+#: MainFrame.py:161
 msgid "Text"
 msgstr "文本"
+
+#: WebSniffer.py:28
+#: window/messages.py:7
+msgid "&Help"
+msgstr "幫助(&H)"
 
 #: window/messages.py:1
 msgid "Web Sniffer Debug Proxy"
 msgstr "WebSniffer"
 
 #: window/messages.py:2
-msgid "File"
-msgstr "檔案"
+msgid "&File"
+msgstr "檔案(&F)"
 
 #: window/messages.py:3
 msgid "New"
@@ -64,6 +114,7 @@ msgid "Open..."
 msgstr "打開..."
 
 #: window/messages.py:5
+#: window/messages.py:15
 msgid "Preferences..."
 msgstr "設置..."
 
@@ -71,37 +122,75 @@ msgstr "設置..."
 msgid "Exit"
 msgstr "退出"
 
-#: window/messages.py:7
-msgid "Edit"
-msgstr "編輯"
-
 #: window/messages.py:8
-#: window/messages.py:9
-#: window/messages.py:10
-msgid "MyMenuItem"
-msgstr ""
-
-#: window/messages.py:11
-msgid "Help"
-msgstr "幫助"
-
-#: window/messages.py:12
 msgid "About..."
 msgstr "關於..."
 
+#: window/messages.py:9
+#: window/messages.py:10
+msgid "Start Proxy"
+msgstr "啟動"
+
+#: window/messages.py:11
+#: window/messages.py:12
+msgid "Clear All"
+msgstr ""
+
 #: window/messages.py:13
 #: window/messages.py:14
-msgid "tool"
+msgid "Preferences"
+msgstr "設置(&P)..."
+
+#: window/messages.py:17
+msgid "HTTP Proxy"
 msgstr ""
 
-#: window/messages.py:15
-msgid "Start Proxy"
+#: window/messages.py:18
+msgid "Address:"
 msgstr ""
 
-#: window/messages.py:16
-msgid "Setting"
-msgstr "設置..."
+#: window/messages.py:19
+msgid "Port:"
+msgstr ""
 
+#: window/messages.py:20
+msgid "&OK"
+msgstr "確認(&O)"
+
+#: window/messages.py:21
+msgid "&Cancel"
+msgstr "取消(&C)"
+
+#: window/messages.py:22
+msgid "About WebSniffer"
+msgstr ""
+
+#: window/messages.py:23
+msgid "WebSniffer 0.1.0 preview"
+msgstr ""
+
+#: window/messages.py:24
+msgid "The Web Debug Proxy"
+msgstr "WebSniffer"
+
+#: window/messages.py:25
+msgid ""
+"Copyright 2009 yinzhigang \n"
+"<sxin.net@gmail.com>"
+msgstr ""
+
+#: window/messages.py:26
+msgid "  ProjectHome:"
+msgstr ""
+
+#: window/messages.py:27
+msgid "http://sourceforge.net/projects/websniffer/"
+msgstr ""
+
+#~ msgid "Edit"
+#~ msgstr "編輯"
+#~ msgid "Setting"
+#~ msgstr "設置..."
 #~ msgid "View"
 #~ msgstr "查看"
 

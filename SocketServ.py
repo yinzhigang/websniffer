@@ -8,6 +8,7 @@ import cPickle as pickle
 from wx import CallAfter
 import ParseInfo
 from DataCache import Cache
+import config
 
 _blanklines = ('\r\n', '\n')
 
@@ -127,8 +128,10 @@ class StartServer(threading.Thread):
     def __init__(self, threadname, window):
         threading.Thread.__init__(self)
         self.window = window
+        self.address_tuple = (config.GetProxyIP(), config.GetProxyPort())
     
     def run(self):
+        print self.address_tuple
         self.server = MBThreadingTCPServer(self.address_tuple, ProxyRequestHandler, self.window)
         self.server.serve_forever()
     

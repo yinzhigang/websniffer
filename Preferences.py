@@ -1,3 +1,4 @@
+# encoding: utf-8
 '''
 Created on Apr 23, 2009
 
@@ -7,6 +8,7 @@ import wx
 from wx import xrc
 
 import resource
+import config
 
 class PreferencesDialog(wx.Dialog):
     
@@ -20,7 +22,14 @@ class PreferencesDialog(wx.Dialog):
         wx.CallAfter(self._PostInit)
 
     def _PostInit(self):
-        address = xrc.XRCCTRL(self, 'address_text')
-        address.SetValue('127.0.0.1')
-        port = xrc.XRCCTRL(self, 'portText')
-        port.SetValue('8789')
+        """配置控件并设置初始值"""
+        self.address_text = xrc.XRCCTRL(self, 'address_text')
+        self.address_text.SetValue(unicode(config.GetProxyIP()))
+        self.port_text = xrc.XRCCTRL(self, 'portText')
+        self.port_text.SetValue(unicode(config.GetProxyPort()))
+
+    def Save(self):
+        """保存配置文件"""
+        config.SetProxyIP(self.address_text.GetValue())
+        config.SetProxyPory(self.port_text.GetValue())
+        config.save()

@@ -210,7 +210,7 @@ class MainFrame(wx.Frame):
         preferences = self.res.LoadDialog(None, 'preferencesDialog')
         preferences.Center()
         if preferences.ShowModal() == wx.ID_OK:
-            pass
+            preferences.Save()
         preferences.Destroy()
     
     def OnHomePage(self, event):
