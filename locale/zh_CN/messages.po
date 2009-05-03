@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WebSniffer 0.1.0\n"
 "POT-Creation-Date: 2009-04-30 01:08+GMT\n"
-"PO-Revision-Date: 2009-04-30 02:04-0000\n"
+"PO-Revision-Date: 2009-05-03 21:03-0000\n"
 "Last-Translator: yinzhigang <sxin.net@gmail.com>\n"
 "Language-Team: yinzhigang <sxin.net@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgstr "原始内容"
 
 #: MainFrame.py:119
 msgid "Response"
-msgstr "回应信息"
+msgstr "响应信息"
 
 #: MainFrame.py:136
 msgid "Domain"
@@ -99,7 +99,7 @@ msgstr "帮助(&H)"
 
 #: window/messages.py:1
 msgid "Web Sniffer Debug Proxy"
-msgstr "WebSniffer"
+msgstr "WebSniffer - 调试代理"
 
 #: window/messages.py:2
 msgid "&File"
@@ -163,7 +163,7 @@ msgstr "取消(&C)"
 
 #: window/messages.py:22
 msgid "About WebSniffer"
-msgstr ""
+msgstr "关于 WebSniffer"
 
 #: window/messages.py:23
 msgid "WebSniffer 0.1.0 preview"
@@ -178,10 +178,12 @@ msgid ""
 "Copyright 2009 yinzhigang \n"
 "<sxin.net@gmail.com>"
 msgstr ""
+"版权所有 2009 殷志刚 \n"
+"<sxin.net@gmail.com>"
 
 #: window/messages.py:26
 msgid "  ProjectHome:"
-msgstr ""
+msgstr " 项目主页:"
 
 #: window/messages.py:27
 msgid "http://sourceforge.net/projects/websniffer/"

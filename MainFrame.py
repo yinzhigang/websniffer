@@ -201,9 +201,13 @@ class MainFrame(wx.Frame):
         self.request_tree.SetItemPyData(request, data)
 
     def OnClearAll(self, event):
-        self.request_tree.DeleteChildren(self.tree_root)
-        self.info_notebook.DeleteAllPages()
-        Cache.ClearCache(init=True)
+        dlg = wx.MessageDialog(self, _("Are you sure clear all data?"),
+                               _("Are you sure?"), wx.YES_NO | wx.ICON_QUESTION)
+        if dlg.ShowModal() == wx.ID_YES:
+            self.request_tree.DeleteChildren(self.tree_root)
+            self.info_notebook.DeleteAllPages()
+            Cache.ClearCache(init=True)
+        dlg.Destroy()
     
     def OnPreferences(self, event):
         """打开设置窗口"""

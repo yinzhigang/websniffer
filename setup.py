@@ -5,6 +5,8 @@ data_files = [
             ('images', ['images/websniffer.ico']),
             ('images/toolbar', glob.glob("images/toolbar/*.png")),
             ('images/menu', glob.glob("images/menu/*.png")),
+            ('locale/zh_CN', glob.glob("locale/zh_CN/*.mo")),
+            ('locale/zh_TW', glob.glob("locale/zh_TW/*.mo")),
             ('window', glob.glob('window/window.xrc')),
             ]
 include_modules = ['MainFrame', 'RequestTree', 'TextCtrl', 'Preferences']
@@ -52,7 +54,7 @@ if sys.platform == 'win32':
           zipfile = None,
           name="WebSniffer",
           description="The web debug proxy",
-          version='0.1.0',
+          version='0.1.5',
           author="yinzhigang",
           author_email="sxin.net@gmail.com",
           data_files = data_files
@@ -62,16 +64,20 @@ elif sys.platform == 'linux2':
 
     setup(
         name = "WebSniffer",
-        version = "0.1.0",
+        version = "0.1.5",
         description = "The web debug proxy",
+        author="yinzhigang",
+        author_email="sxin.net@gmail.com",
         data_files = data_files,
         options = dict(
-                     build_exe = dict(includes = include_modules,
-                                packages=['encodings'],
-                                compressed = True,
-                                ),
-                  ),
-        executables = [Executable("WebSniffer.py")]
+             build_exe = dict(includes = include_modules,
+                        packages=['encodings'],
+                        compressed = True,
+                        optimize = 2,
+                        include_files = [('images', 'images'), ('window', 'window'), ('locale', 'locale')],
+                        ),
+              ),
+        executables = [Executable("WebSniffer.py", copyDependentFiles=True)]
     )
 elif sys.platform == 'darwin':
     from distutils.core import setup
@@ -86,8 +92,8 @@ elif sys.platform == 'darwin':
                 #resources=['resources/License.txt'],
                 plist=dict(
                     CFBundleName               = "WebSniffer",
-                    CFBundleShortVersionString = "0.1.0",     # must be in X.X.X format
-                    CFBundleGetInfoString      = "WebSniffer 0.1.0",
+                    CFBundleShortVersionString = "0.1.5",     # must be in X.X.X format
+                    CFBundleGetInfoString      = "WebSniffer 0.1.5",
                     CFBundleExecutable         = "WebSniffer",
                     CFBundleIdentifier         = "cn.websniffer.WebSniffer",
                 ),
