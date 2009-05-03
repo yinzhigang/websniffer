@@ -33,6 +33,7 @@ class WebSnifferApp(wx.App):
             self.SetMacExitMenuItemId(xrc.XRCID('menuExit'))
             self.SetMacAboutMenuItemId(xrc.XRCID('helpAboutMenu'))
             self.SetMacPreferencesMenuItemId(xrc.XRCID('menuPreferences'))
+        wx.Log_SetActiveTarget(wx.LogStderr())
         
         self.frame = self.res.LoadFrame(None, 'mainFrame')
         self.frame.SetSize(wx.Size(800,600))

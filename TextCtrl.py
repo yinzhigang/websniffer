@@ -26,10 +26,10 @@ class TextCtrl(wx.TextCtrl):
         if wx.Platform == "__WXMAC__":
             value = value.replace('\r\n', '\n')
         try:
-            if len(value) > 20000:
+            if len(value) > 2000:
                 self.text = value
                 self.Bind(wx.EVT_SET_FOCUS, self.OnFocus, self)
-                value = value[:20000]
+                value = value[:2000]
             super(TextCtrl, self).SetValue(value)
         except Exception, e:
             pass
@@ -37,7 +37,7 @@ class TextCtrl(wx.TextCtrl):
     def OnFocus(self, event):
         if self.text:
             try:
-                self.AppendText(self.text[20000:])
+                self.AppendText(self.text[2000:])
                 self.SetInsertionPoint(0)
                 self.text = None
             except Exception, e:
