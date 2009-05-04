@@ -1,10 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # encoding: utf-8
 '''
 Created on Mar 21, 2009
 
 @author: sxin
 '''
+import os
+
 import wx
 from wx import xrc
 
@@ -41,6 +43,11 @@ class WebSnifferApp(wx.App):
         self.frame.Show()
 
 if __name__ == '__main__':
+    path = os.path.dirname(os.path.realpath(__file__)) 
+    if os.path.isfile(path):
+        path = os.path.dirname(path)
+    os.chdir(path)
+    
     L = wx.Locale()
     app = WebSnifferApp(False)
     app.MainLoop()

@@ -6,15 +6,10 @@ Created on Mar 21, 2009
 '''
 version = '0.1'
 
-import os
 import wx
 from wx import xrc
 
 res = None;
-path = os.path.dirname(os.path.realpath(__file__)) 
-if os.path.isfile(path):
-    path = os.path.dirname(path)
-os.chdir(path)
 
 def GetResource():
     global res
