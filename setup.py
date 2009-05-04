@@ -68,13 +68,15 @@ elif sys.platform == 'linux2':
         description = "The web debug proxy",
         author="yinzhigang",
         author_email="sxin.net@gmail.com",
-        data_files = data_files,
         options = dict(
              build_exe = dict(includes = include_modules,
                         packages=['encodings'],
                         compressed = True,
                         optimize = 2,
-                        include_files = [('images', 'images'), ('window', 'window'), ('locale', 'locale')],
+                        include_files = [('images', 'images'), ('window', 'window'),
+                                         ('locale/zh_CN/', 'locale/zh_CN/message.mo'),
+                                         ('locale/zh_TW/', 'locale/zh_TW/message.mo'),
+                                         ],
                         ),
               ),
         executables = [Executable("WebSniffer.py", copyDependentFiles=True)]
