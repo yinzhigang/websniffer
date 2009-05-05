@@ -6,6 +6,7 @@ Created on Mar 21, 2009
 @author: sxin
 '''
 import os
+import sys
 
 import wx
 from wx import xrc
@@ -43,7 +44,7 @@ class WebSnifferApp(wx.App):
         self.frame.Show()
 
 if __name__ == '__main__':
-    path = os.path.dirname(os.path.realpath(__file__)) 
+    path = os.path.dirname(os.path.realpath(sys.argv[0])) 
     if os.path.isfile(path):
         path = os.path.dirname(path)
     os.chdir(path)
