@@ -9,6 +9,7 @@ data_files = [
             ('locale/zh_CN', glob.glob("locale/zh_CN/*.mo")),
             ('locale/zh_TW', glob.glob("locale/zh_TW/*.mo")),
             ('window', glob.glob('window/window.xrc')),
+            ('', glob.glob('*.txt')),
             ]
 include_modules = ['MainFrame', 'RequestTree', 'TextCtrl', 'Preferences']
 
