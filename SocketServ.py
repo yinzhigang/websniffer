@@ -36,19 +36,20 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
         """处理连接请求，一般用于HTTPS"""
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            i = self.path.find(':')
-            if i >= 0:
-                host_port = self.path[:i], int(self.path[i+1:])
-            else:
-                host_port = netloc, 80
-            soc.connect(host_port)
-            self.wfile.write("HTTP/1.0" +
-                             " 200 Connection established\r\n")
-            self.wfile.write("Proxy-agent: %s\r\n" % "WebSniffer")
-            self.wfile.write("\r\n")
-            self._read_write(soc, parse_info, 300)
-        except:
-            print 'sock error'
+            try:
+                i = self.path.find(':')
+                if i >= 0:
+                    host_port = self.path[:i], int(self.path[i+1:])
+                else:
+                    host_port = netloc, 80
+                soc.connect(host_port)
+                self.wfile.write("HTTP/1.0" +
+                                 " 200 Connection established\r\n")
+                self.wfile.write("Proxy-agent: %s\r\n" % "WebSniffer")
+                self.wfile.write("\r\n")
+                self._read_write(soc, parse_info, 300)
+            except:
+                print 'sock error'
         finally:
             soc.close()
             self.connection.close()
@@ -59,48 +60,49 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
         
         soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            i = host.find(':')
-            if i >= 0:
-                host_port = host[:i], int(host[i+1:])
-            else:
-                host_port = host, 80
-            soc.connect(host_port)
-            parse_info.setHost(host, soc.getpeername())
-            
-            url = urlparse.urlunparse(('', '', path, params, query, ''))
-            request_url_command = "%s %s %s%s" % (self.command, url, self.request_version, self.reline)
-            
-            soc.send(request_url_command)
-            parse_info.write('request', request_url_command)
-            
-            content_len = None
-            while True:
-                line = self.rfile.readline()
-                if not line:
-                    break
-                if line[:16].lower() == 'proxy-connection':
-                    line = "Connection: close%s" % (self.reline)
-                if line[:14].lower() == 'content-length':
-                    content_len = int(line[15:])
-                soc.send(line)
-                parse_info.write('request', line)
-                if line in _blanklines:
-                    if content_len:
-                        postdata = self.rfile.read(content_len)
-                        if postdata:
-                            soc.send(postdata)
-                            parse_info.write('request', postdata)
-                    break
-            self._read_write(soc, parse_info)
-            
-            parse_info.parse()
-            cache_key = Cache.RandomString()
-            dump = pickle.dumps(parse_info, protocol=1)
-            Cache.Set(cache_key, dump)
-            #通知主窗口更新
-            CallAfter(self.server.window.DoNewRequest, (host, path, params, query), cache_key)
-        except Exception, e:
-            print 'error sock', e
+            try:
+                i = host.find(':')
+                if i >= 0:
+                    host_port = host[:i], int(host[i+1:])
+                else:
+                    host_port = host, 80
+                soc.connect(host_port)
+                parse_info.setHost(host, soc.getpeername())
+                
+                url = urlparse.urlunparse(('', '', path, params, query, ''))
+                request_url_command = "%s %s %s%s" % (self.command, url, self.request_version, self.reline)
+                
+                soc.send(request_url_command)
+                parse_info.write('request', request_url_command)
+                
+                content_len = None
+                while True:
+                    line = self.rfile.readline()
+                    if not line:
+                        break
+                    if line[:16].lower() == 'proxy-connection':
+                        line = "Connection: close%s" % (self.reline)
+                    if line[:14].lower() == 'content-length':
+                        content_len = int(line[15:])
+                    soc.send(line)
+                    parse_info.write('request', line)
+                    if line in _blanklines:
+                        if content_len:
+                            postdata = self.rfile.read(content_len)
+                            if postdata:
+                                soc.send(postdata)
+                                parse_info.write('request', postdata)
+                        break
+                self._read_write(soc, parse_info)
+                
+                parse_info.parse()
+                cache_key = Cache.RandomString()
+                dump = pickle.dumps(parse_info, protocol=1)
+                Cache.Set(cache_key, dump)
+                #通知主窗口更新
+                CallAfter(self.server.window.DoNewRequest, (host, path, params, query), cache_key)
+            except Exception, e:
+                print 'error sock', e
         finally:
             soc.close()
             self.connection.close()
@@ -164,9 +166,10 @@ class StartServer(threading.Thread):
         self.server.shutdown()
         close_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            close_sock.connect(self.address_tuple)
-        except Exception:
-            pass
+            try:
+                close_sock.connect(self.address_tuple)
+            except Exception:
+                pass
         finally:
             close_sock.close()
         self.server.server_close()

@@ -64,6 +64,7 @@ if sys.platform == 'win32':
 elif sys.platform == 'linux2':
     from cx_Freeze import setup, Executable
 
+    include_modules.append('dbhash')
     setup(
         name = "WebSniffer",
         version = "0.1.5",
@@ -72,7 +73,7 @@ elif sys.platform == 'linux2':
         author_email="sxin.net@gmail.com",
         options = dict(
              build_exe = dict(includes = include_modules,
-                        packages=['encodings'],
+                        packages=['encodings', 'bsddb'],
                         compressed = True,
                         optimize = 2,
                         include_files = [('images', 'images'), ('window', 'window'),
