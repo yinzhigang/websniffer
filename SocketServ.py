@@ -102,7 +102,8 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 #通知主窗口更新
                 CallAfter(self.server.window.DoNewRequest, (host, path, params, query), cache_key)
             except Exception, e:
-                print 'error sock', e
+                pass
+#                print 'error sock', e
         finally:
             soc.close()
             self.connection.close()
@@ -130,7 +131,8 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                         parse_info.write(method, data)
                         count = 0
             else:
-                print "\t" "idle", count
+                pass
+#                print "\t" "idle", count
             if count == max_idling: break
 
 class MBThreadingTCPServer(SocketServer.ThreadingTCPServer):

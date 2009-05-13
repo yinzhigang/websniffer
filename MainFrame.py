@@ -42,7 +42,12 @@ class MainFrame(wx.Frame):
         self.infoPanel = xrc.XRCCTRL(self, 'infoPanel')
         self.info_notebook = xrc.XRCCTRL(self, 'info_notebook')
         
+        il = wx.ImageList(16, 16)
+        self.fldridx = il.Add(wx.Image('images/tree/folderclosed.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.fldropen = il.Add(wx.Image('images/tree/folderopen.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        
         self.request_tree = xrc.XRCCTRL(self, 'request_tree')
+        self.request_tree.AssignImageList(il)
         self.request_tree.Bind(wx.EVT_TREE_SEL_CHANGED,
               self.OnTreeRequestTreeSelChanged, id=xrc.XRCID('request_tree'))
         self.tree_root = self.request_tree.AddRoot('root')
@@ -73,12 +78,17 @@ class MainFrame(wx.Frame):
         root = treeListCtrl1.AddRoot('root')
         urlItem = treeListCtrl1.AppendItem(root, _('URL:'))
         treeListCtrl1.SetItemText(urlItem, parse_info.getUrl(), 1)
+        
         hostItem = treeListCtrl1.AppendItem(root, _('Host:'))
         treeListCtrl1.SetItemText(hostItem, parse_info.getHost(), 1)
+        treeListCtrl1.SetItemBackgroundColour(hostItem, "light blue")
+        
         clientItem = treeListCtrl1.AppendItem(root, _('Client:'))
         treeListCtrl1.SetItemText(clientItem, parse_info.getClient(), 1)
+        
         contentTypeItem = treeListCtrl1.AppendItem(root, _('Content-Type:'))
         treeListCtrl1.SetItemText(contentTypeItem, parse_info.header('response', 'Content-Type'), 1)
+        treeListCtrl1.SetItemBackgroundColour(contentTypeItem, "light blue")
         treeListCtrl1.Expand(root)
         
         generalPanpel.SetSizer(generalBoxSizer)
@@ -106,6 +116,8 @@ class MainFrame(wx.Frame):
             i = 0
             for key, value in request_cookie.items():
                 cookieItem = requestCookieListCtrl.InsertStringItem(i, label=key)
+                if i % 2:
+                    requestCookieListCtrl.SetItemBackgroundColour(cookieItem, "light blue")
                 requestCookieListCtrl.SetStringItem(cookieItem, 1, urllib.unquote_plus(value.value))
                 i += 1
         
@@ -196,6 +208,8 @@ class MainFrame(wx.Frame):
             item, cookie = self.request_tree.GetNextChild(self.tree_root, cookie)
         if host_item is None:
             host_item = self.request_tree.AppendItem(self.tree_root, host)
+            self.request_tree.SetItemImage(host_item, self.fldridx, wx.TreeItemIcon_Normal)
+            self.request_tree.SetItemImage(host_item, self.fldropen, wx.TreeItemIcon_Expanded)
         url = urlparse.urlunparse(('', '', path, params, query, ''))
         request = self.request_tree.AppendItem(host_item, url)
         self.request_tree.SetItemPyData(request, data)
