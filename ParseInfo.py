@@ -7,6 +7,7 @@ Created on Apr 6, 2009
 from StringIO import StringIO
 import Cookie, httplib
 import gzip
+import urllib
 
 import chardet
 
@@ -30,11 +31,6 @@ class ParseInfo(object):
         self.request.seek(0)
         self.request_commend = self.request.readline()
         self.request_header = httplib.HTTPMessage(self.request)
-#        for line in self.request:
-#            if not line: break
-#            if line in _blanklines: break
-#            key, value = line.split(':', 1)
-#            self.request_header[key] = value
         #request body
         self.request_body = ''.join(self.request.readlines())
         request_body_encode = chardet.detect(self.request_body).get('encoding')
@@ -45,11 +41,6 @@ class ParseInfo(object):
         self.response.seek(0)
         self.response_commend = self.response.readline()
         self.response_header = httplib.HTTPMessage(self.response)
-#        for line in self.response:
-#            if not line: break
-#            if line in _blanklines: break
-#            key, value = line.split(':', 1)
-#            self.response_header[key] = value
         #response body
         chunked = self.response_header.get('Transfer-Encoding', '')
         if chunked == 'chunked':
@@ -90,6 +81,7 @@ class ParseInfo(object):
         return ''.join(headers)
     
     def header(self, method, name):
+        """获取元信息，单条"""
         if method == 'request':
             header = self.request_header
         elif method == 'response':
@@ -97,6 +89,7 @@ class ParseInfo(object):
         return header.get(name, '')
     
     def getBodyContent(self, method):
+        """获取内容主体"""
         if method == 'request':
             return self.request_body
         elif method == 'response':

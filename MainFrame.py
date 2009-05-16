@@ -43,8 +43,12 @@ class MainFrame(wx.Frame):
         self.info_notebook = xrc.XRCCTRL(self, 'info_notebook')
         
         il = wx.ImageList(16, 16)
-        self.fldridx = il.Add(wx.Image('images/tree/folderclosed.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
-        self.fldropen = il.Add(wx.Image('images/tree/folderopen.png', wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.fldridx = il.Add(wx.Image('images/tree/folderclosed.png', 
+                                       wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.fldropen = il.Add(wx.Image('images/tree/folderopen.png', 
+                                        wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.itemgeneric = il.Add(wx.Image('images/tree/generic.png', 
+                                           wx.BITMAP_TYPE_PNG).ConvertToBitmap())
         
         self.request_tree = xrc.XRCCTRL(self, 'request_tree')
         self.request_tree.AssignImageList(il)
@@ -58,7 +62,11 @@ class MainFrame(wx.Frame):
         if self.request_tree.ItemHasChildren(item) is False:
             data = self.request_tree.GetItemPyData(item)
             parse_info = pickle.loads(Cache.Get(data))
+#            try:
             self.ShowInfo(parse_info)
+#            except:
+#                self.infoPanel.Thaw()
+#                print 'ShowInfo error'
     
     def ShowInfo(self, parse_info):
         """ 显示相关请求信息 """
@@ -72,7 +80,8 @@ class MainFrame(wx.Frame):
         treeListCtrl1 = wx.gizmos.TreeListCtrl(id=-1,
               name='treeListCtrl1', parent=generalPanpel,
               size=generalPanpel.GetSize(),
-              style=wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_DEFAULT_STYLE)
+              style=wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT |
+              wx.TR_DEFAULT_STYLE | wx.TR_NO_LINES)
         treeListCtrl1.AddColumn(text=_('Name'), width=150)
         treeListCtrl1.AddColumn(text=_('Value'), width=350)
         root = treeListCtrl1.AddRoot('root')
@@ -118,7 +127,7 @@ class MainFrame(wx.Frame):
                 cookieItem = requestCookieListCtrl.InsertStringItem(i, label=key)
                 if i % 2:
                     requestCookieListCtrl.SetItemBackgroundColour(cookieItem, "light blue")
-                requestCookieListCtrl.SetStringItem(cookieItem, 1, urllib.unquote_plus(value.value))
+                requestCookieListCtrl.SetStringItem(cookieItem, 1, value.value)
                 i += 1
         
         requestRaw = self.res.LoadPanel(requestBook, 'textPanel')
@@ -152,9 +161,9 @@ class MainFrame(wx.Frame):
             i = 0
             for key, value in response_cookie.items():
                 cookieItem = responseCookieListCtrl.InsertStringItem(i, label=key)
-                responseCookieListCtrl.SetStringItem(cookieItem, 1, urllib.unquote_plus(value.value))
-                responseCookieListCtrl.SetStringItem(cookieItem, 2, urllib.unquote_plus(value['domain']))
-                responseCookieListCtrl.SetStringItem(cookieItem, 3, urllib.unquote_plus(value['path']))
+                responseCookieListCtrl.SetStringItem(cookieItem, 1, value.value)
+                responseCookieListCtrl.SetStringItem(cookieItem, 2, value['domain'])
+                responseCookieListCtrl.SetStringItem(cookieItem, 3, value['path'])
                 i += 1
         
         content_type = parse_info.header('response', 'Content-Type')
@@ -163,7 +172,8 @@ class MainFrame(wx.Frame):
                 responseBody = self.res.LoadPanel(responseBook, 'imagePanel')
                 responseBodyImageCtrl = xrc.XRCCTRL(responseBody, 'image')
                 response_body_image = StringIO(parse_info.getBodyContent('response'))
-                image = wx.ImageFromStreamMime(response_body_image, content_type).ConvertToBitmap()
+                image = wx.ImageFromStreamMime(response_body_image, 
+                                               content_type).ConvertToBitmap()
                 responseBook.AddPage(page=responseBody, select=False, text=_("Image"))
                 responseBodyImageCtrl.SetBitmap(image)
             except Exception, e:
@@ -212,6 +222,7 @@ class MainFrame(wx.Frame):
             self.request_tree.SetItemImage(host_item, self.fldropen, wx.TreeItemIcon_Expanded)
         url = urlparse.urlunparse(('', '', path, params, query, ''))
         request = self.request_tree.AppendItem(host_item, url)
+        self.request_tree.SetItemImage(request, self.itemgeneric, wx.TreeItemIcon_Normal)
         self.request_tree.SetItemPyData(request, data)
 
     def OnClearAll(self, event):
