@@ -1,4 +1,18 @@
 # encoding: utf-8
+###############################################################################
+# WebSniffer - The web debug proxy.
+# Copyright (C) 2009 yinzhigang <sxin.net@gmail.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+###############################################################################
 
 import wx
 from wx import xrc
@@ -6,7 +20,7 @@ import wx.gizmos
 
 from cStringIO import StringIO
 import cPickle as pickle
-import urllib
+import urllib, urlparse, cgi
 
 import resource
 from DataCache import Cache
@@ -30,14 +44,21 @@ class MainFrame(wx.Frame):
     
     def _PostInit(self):
         """初始化窗口控件"""
-        self.Bind(wx.EVT_MENU, self.OnPreferences, id=xrc.XRCID('menuPreferences'))
-        self.Bind(wx.EVT_MENU, self.OnExit, id=xrc.XRCID('menuExit'))
-        self.Bind(wx.EVT_MENU, self.OnHomePage, id=xrc.XRCID('helpHomePageMenu'))
-        self.Bind(wx.EVT_MENU, self.OnAbout, id=xrc.XRCID('helpAboutMenu'))
+        self.Bind(wx.EVT_MENU, self.OnPreferences, 
+                  id=xrc.XRCID('menuPreferences'))
+        self.Bind(wx.EVT_MENU, self.OnExit, 
+                  id=xrc.XRCID('menuExit'))
+        self.Bind(wx.EVT_MENU, self.OnHomePage, 
+                  id=xrc.XRCID('helpHomePageMenu'))
+        self.Bind(wx.EVT_MENU, self.OnAbout, 
+                  id=xrc.XRCID('helpAboutMenu'))
         
-        self.Bind(wx.EVT_TOOL, self.OnProxyStart, id=xrc.XRCID('toolBarStart'))
-        self.Bind(wx.EVT_TOOL, self.OnClearAll, id=xrc.XRCID('toolBarClearAll'))
-        self.Bind(wx.EVT_TOOL, self.OnPreferences, id=xrc.XRCID('toolBarPreferences'))
+        self.Bind(wx.EVT_TOOL, self.OnProxyStart, 
+                  id=xrc.XRCID('toolBarStart'))
+        self.Bind(wx.EVT_TOOL, self.OnClearAll, 
+                  id=xrc.XRCID('toolBarClearAll'))
+        self.Bind(wx.EVT_TOOL, self.OnPreferences, 
+                  id=xrc.XRCID('toolBarPreferences'))
         
         self.infoPanel = xrc.XRCCTRL(self, 'infoPanel')
         self.info_notebook = xrc.XRCCTRL(self, 'info_notebook')
@@ -53,10 +74,10 @@ class MainFrame(wx.Frame):
         self.request_tree = xrc.XRCCTRL(self, 'request_tree')
         self.request_tree.AssignImageList(il)
         self.request_tree.Bind(wx.EVT_TREE_SEL_CHANGED,
-              self.OnTreeRequestTreeSelChanged, id=xrc.XRCID('request_tree'))
+              self.OnRequestTreeSelChanged, id=xrc.XRCID('request_tree'))
         self.tree_root = self.request_tree.AddRoot('root')
     
-    def OnTreeRequestTreeSelChanged(self, event):
+    def OnRequestTreeSelChanged(self, event):
         """ RequesTree选择更换事件 """
         item = event.GetItem()
         if self.request_tree.ItemHasChildren(item) is False:
@@ -71,10 +92,12 @@ class MainFrame(wx.Frame):
     def ShowInfo(self, parse_info):
         """ 显示相关请求信息 """
         self.infoPanel.Freeze()
+        bookSelection = self.info_notebook.GetSelection()
         self.info_notebook.DeleteAllPages()
         #========== General Tab ===========
         generalPanpel = self.res.LoadPanel(self.info_notebook, 'generalPanel')
-        self.info_notebook.AddPage(page=generalPanpel, select=True, text=_("General"))
+        self.info_notebook.AddPage(page=generalPanpel,
+                                   select=True, text=_("General"))
         
         generalBoxSizer = wx.BoxSizer(orient=wx.VERTICAL)
         treeListCtrl1 = wx.gizmos.TreeListCtrl(id=-1,
@@ -85,19 +108,19 @@ class MainFrame(wx.Frame):
         treeListCtrl1.AddColumn(text=_('Name'), width=150)
         treeListCtrl1.AddColumn(text=_('Value'), width=350)
         root = treeListCtrl1.AddRoot('root')
-        urlItem = treeListCtrl1.AppendItem(root, _('URL:'))
-        treeListCtrl1.SetItemText(urlItem, parse_info.getUrl(), 1)
-        
-        hostItem = treeListCtrl1.AppendItem(root, _('Host:'))
-        treeListCtrl1.SetItemText(hostItem, parse_info.getHost(), 1)
-        treeListCtrl1.SetItemBackgroundColour(hostItem, "light blue")
-        
-        clientItem = treeListCtrl1.AppendItem(root, _('Client:'))
-        treeListCtrl1.SetItemText(clientItem, parse_info.getClient(), 1)
-        
-        contentTypeItem = treeListCtrl1.AppendItem(root, _('Content-Type:'))
-        treeListCtrl1.SetItemText(contentTypeItem, parse_info.header('response', 'Content-Type'), 1)
-        treeListCtrl1.SetItemBackgroundColour(contentTypeItem, "light blue")
+        generalList = [(_('URL:'), parse_info.getUrl()),
+                       (_('Status:'), parse_info.getStatus()),
+                       (_('Host:'), parse_info.getHost()),
+                       (_('Client:'), parse_info.getClient()),
+                       (_('Content-Type:'), parse_info.header('response', 'Content-Type')),
+                       ]
+        i = 0
+        for label, value in generalList:
+            item = treeListCtrl1.AppendItem(root, label)
+            treeListCtrl1.SetItemText(item, value, 1)
+            if i % 2:
+                treeListCtrl1.SetItemBackgroundColour(item, "light blue")
+            i += 1
         treeListCtrl1.Expand(root)
         
         generalPanpel.SetSizer(generalBoxSizer)
@@ -114,6 +137,23 @@ class MainFrame(wx.Frame):
         request_header_text = parse_info.getHeaderText('request')
         requestBook.AddPage(page=requestHeader, select=True, text=_("Headers"))
         requestHeaderTextCtrl.SetValue(request_header_text)
+        
+        (scm, host, path, params, query, fragment) = urlparse.urlparse(parse_info.getUrl())
+        if query:
+            query_arr = cgi.parse_qs(query)
+            queryPanel = self.res.LoadPanel(requestBook, 'listPanel')
+            queryListCtrl = xrc.XRCCTRL(queryPanel, 'listCtrl')
+            requestBook.AddPage(page=queryPanel, select=False, text=_("Query"))
+            queryListCtrl.InsertColumn(0, _('Key'), width=150)
+            queryListCtrl.InsertColumn(1, _('Value'), width=350)
+            i = 0
+            for key, value in query_arr.items():
+                queryItem = queryListCtrl.InsertStringItem(i, label=key)
+                if i % 2:
+                    queryListCtrl.SetItemBackgroundColour(queryItem, "light blue")
+                queryListCtrl.SetStringItem(queryItem, 1, value[0])
+                i += 1
+#            query_arr = dict(part.split('=') for part in query.split('&'))
         
         request_cookie = parse_info.cookie('request')
         if request_cookie:
@@ -192,6 +232,8 @@ class MainFrame(wx.Frame):
         responseBook.AddPage(page=responseRaw, select=False, text=_("Raw"))
         responseRawTextCtrl.SetValue(response_raw_text)
         #========== End Response Tab ===========
+        if bookSelection > 0:
+            self.info_notebook.ChangeSelection(bookSelection)
         self.infoPanel.Thaw()
 
     def OnProxyStart(self, event):
@@ -206,7 +248,6 @@ class MainFrame(wx.Frame):
 
     def DoNewRequest(self, path, data = ''):
         """添加请求到树中"""
-        import urlparse
         host, path, params, query = path
         item, cookie = self.request_tree.GetFirstChild(self.tree_root)
         host_item = None
@@ -218,20 +259,25 @@ class MainFrame(wx.Frame):
             item, cookie = self.request_tree.GetNextChild(self.tree_root, cookie)
         if host_item is None:
             host_item = self.request_tree.AppendItem(self.tree_root, host)
-            self.request_tree.SetItemImage(host_item, self.fldridx, wx.TreeItemIcon_Normal)
-            self.request_tree.SetItemImage(host_item, self.fldropen, wx.TreeItemIcon_Expanded)
+            self.request_tree.SetItemImage(host_item, self.fldridx,
+                                           wx.TreeItemIcon_Normal)
+            self.request_tree.SetItemImage(host_item, self.fldropen,
+                                           wx.TreeItemIcon_Expanded)
         url = urlparse.urlunparse(('', '', path, params, query, ''))
         request = self.request_tree.AppendItem(host_item, url)
-        self.request_tree.SetItemImage(request, self.itemgeneric, wx.TreeItemIcon_Normal)
+        self.request_tree.SetItemImage(request, self.itemgeneric,
+                                       wx.TreeItemIcon_Normal)
         self.request_tree.SetItemPyData(request, data)
 
     def OnClearAll(self, event):
         dlg = wx.MessageDialog(self, _("Are you sure clear all data?"),
                                _("Are you sure?"), wx.YES_NO | wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES:
+            self.Freeze()
             self.request_tree.DeleteChildren(self.tree_root)
             self.info_notebook.DeleteAllPages()
             Cache.ClearCache(init=True)
+            self.Thaw()
         dlg.Destroy()
     
     def OnPreferences(self, event):

@@ -39,7 +39,7 @@ class ParseInfo(object):
         
         #response header
         self.response.seek(0)
-        self.response_commend = self.response.readline()
+        self.response_status = self.response.readline()
         self.response_header = httplib.HTTPMessage(self.response)
         #response body
         chunked = self.response_header.get('Transfer-Encoding', '')
@@ -68,6 +68,14 @@ class ParseInfo(object):
         del self.request
         del self.response
 
+    def getStatus(self):
+        """获取返回状态"""
+        status = self.response_status
+        i = status.find(' ')
+        if i:
+            status = status[i+1:]
+        return status
+    
     def getHeaderText(self, method):
         """获取请求或返回的元信息"""
         if method == 'request':
@@ -75,7 +83,7 @@ class ParseInfo(object):
             headers = [self.request_commend]
         elif method == 'response':
             header = self.response_header
-            headers = [self.response_commend]
+            headers = [self.response_status]
         for item in header.headers:
             headers.append(item)
         return ''.join(headers)
