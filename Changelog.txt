@@ -1,0 +1,16 @@
+                         WebSniffer ChangeLog
+*******************************************************************************
+
+05/05/2009 Version 0.1.5
+* HTTPS代理(不支持调试)
+* 监听IP及端口号可自定义
+* l10n支持
+* 工具栏图标更换
+* Linux、Mac OS平台版本发布
+* Bug fix: 使用DBM缓存数据，解决打开文件过多的问题
+* Bug fix: 图片解析失败跳出警告框
+
+04/02/2009 Version 0.1.0-preview
+* The first release
+* 支持基本HTTP信息显示
+* 支持Cookie解析
