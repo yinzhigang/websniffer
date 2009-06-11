@@ -115,7 +115,8 @@ class ProxyRequestHandler(SocketServer.StreamRequestHandler):
                 dump = pickle.dumps(parse_info, protocol=1)
                 Cache.Set(cache_key, dump)
                 #通知主窗口更新
-                CallAfter(self.server.window.DoNewRequest, (host, path, params, query), cache_key)
+                CallAfter(self.server.window.DoNewRequest,
+                          (host, path, params, query), cache_key)
             except Exception, e:
                 pass
 #                print 'error sock', e
