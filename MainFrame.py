@@ -237,13 +237,37 @@ class MainFrame(wx.Frame):
         self.infoPanel.Thaw()
 
     def OnProxyStart(self, event):
+        """启动检测"""
         import SocketServ
         if event.IsChecked():
             Cache.Init()  #初始化缓存
             self.thread = SocketServ.StartServer('SocketServ', self)
             self.thread.setDaemon(1)
             self.thread.start()
+            if wx.Platform == '__WXMSW__':
+                import _winreg as winreg
+                from ctypes import windll
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                        'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
+                        0, winreg.KEY_WRITE|winreg.KEY_READ)
+                self.ProxyEnable = winreg.QueryValueEx(key, 'ProxyEnable')
+                self.ProxyServer = winreg.QueryValueEx(key, 'ProxyServer')
+                winreg.SetValueEx(key, 'ProxyEnable', 0, winreg.REG_DWORD, 1)
+                winreg.SetValueEx(key, 'ProxyServer', 0, winreg.REG_SZ,
+                                  'http=localhost:8789;https=localhost:8789;')
+                winreg.CloseKey(key)
+                windll.wininet.InternetSetOptionW(None, 39, None, 0)
         else:
+            if wx.Platform == '__WXMSW__':
+                import _winreg as winreg
+                from ctypes import windll
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                        'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
+                        0, winreg.KEY_WRITE|winreg.KEY_READ)
+                winreg.SetValueEx(key, 'ProxyEnable', 0, winreg.REG_DWORD, 0)
+                winreg.SetValueEx(key, 'ProxyServer', 0, winreg.REG_SZ, '')
+                winreg.CloseKey(key)
+                windll.wininet.InternetSetOptionW(None, 39, None, 0)
             self.thread.stop()
 
     def DoNewRequest(self, path, data = ''):
@@ -270,6 +294,7 @@ class MainFrame(wx.Frame):
         self.request_tree.SetItemPyData(request, data)
 
     def OnClearAll(self, event):
+        """清除所有监控数据"""
         dlg = wx.MessageDialog(self, _("Are you sure clear all data?"),
                                _("Are you sure?"), wx.YES_NO | wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES:
@@ -307,3 +332,13 @@ class MainFrame(wx.Frame):
     def __del__(self):
         """退出程序时清除缓存"""
         Cache.ClearCache()
+        if wx.Platform == '__WXMSW__':
+            import _winreg as winreg
+            from ctypes import windll
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                    'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
+                    0, winreg.KEY_WRITE|winreg.KEY_READ)
+            winreg.SetValueEx(key, 'ProxyEnable', 0, winreg.REG_DWORD, 0)
+            winreg.SetValueEx(key, 'ProxyServer', 0, winreg.REG_SZ, '')
+            winreg.CloseKey(key)
+            windll.wininet.InternetSetOptionW(None, 39, None, 0)
